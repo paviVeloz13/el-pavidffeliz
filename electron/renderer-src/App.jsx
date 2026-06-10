@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar.jsx';
 import Convert from './screens/Convert.jsx';
 import Merge from './screens/Merge.jsx';
 import Split from './screens/Split.jsx';
+import Compress from './screens/Compress.jsx';
 import Organize from './screens/Organize.jsx';
 import Lock from './screens/Lock.jsx';
 import Unlock from './screens/Unlock.jsx';
@@ -38,7 +39,7 @@ export default function App() {
       case 'organize': return <Organize s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'merge':    return <Merge s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'split':    return <Split s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
-      case 'compress': return <StubScreen title={s.navCompress}  sub={s.stubSub} />;
+      case 'compress': return <Compress s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'edit':     return <StubScreen title={s.navEdit}      sub={s.stubSub} />;
       case 'redact':   return <StubScreen title={s.navRedact}    sub={s.stubSub} />;
       case 'sign':     return <Sign s={s} outputDir={outputDir} onPickFolder={pickFolder} />;

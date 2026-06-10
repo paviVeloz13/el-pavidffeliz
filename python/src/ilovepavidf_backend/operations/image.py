@@ -12,6 +12,7 @@ from ilovepavidf_backend.operations.common import (
     ProgressEmitter,
     bool_param,
     file_result,
+    int_param,
     noop_progress,
     require_input_file,
     require_input_files,
@@ -154,6 +155,51 @@ def images_to_pdf(
     result["page_count"] = len(input_paths)
     result["sources"] = source_metadata
     return result
+
+
+def compress_image(
+    input_path: Path,
+    output_path: Path,
+    *,
+    quality: int = 75,
+    overwrite: bool = False,
+    emit_progress: ProgressEmitter = noop_progress,
+) -> dict[str, Any]:
+    original_bytes = input_path.stat().st_size
+    output = require_output_file(str(output_path), input_path=input_path, overwrite=overwrite)
+
+    emit_progress(0.1, "Opening image")
+    image = _open_image(input_path)
+    fmt = (image.format or "").upper()
+    if fmt not in ("JPEG", "PNG"):
+        raise ValidationError("compress supports JPEG and PNG only.", {"format": fmt, "path": str(input_path)})
+
+    emit_progress(0.5, f"Compressing {fmt}")
+    if fmt == "JPEG":
+        _flatten_to_rgb(image).save(output, format="JPEG", quality=quality, optimize=True)
+    else:
+        image.save(output, format="PNG", optimize=True, compress_level=9)
+    image.close()
+
+    emit_progress(1.0, "Compressed")
+    output_bytes = output.stat().st_size
+    saved_bytes = original_bytes - output_bytes
+    saved_pct = round(saved_bytes / original_bytes * 100, 1) if original_bytes > 0 else 0.0
+    result = file_result("image.compress", [input_path], [output])
+    result.update({"format": fmt, "original_bytes": original_bytes, "output_bytes": output_bytes,
+                   "saved_bytes": saved_bytes, "saved_pct": saved_pct})
+    if fmt == "JPEG":
+        result["quality"] = quality
+    return result
+
+
+def handle_compress_image(params: dict[str, Any], emit_progress: ProgressEmitter = noop_progress) -> dict[str, Any]:
+    input_path = require_input_file(params.get("input_path"))
+    output_path = require_output_file(params.get("output_path"), overwrite=bool_param(params, "overwrite", False))
+    quality = int_param(params, "quality", 75)
+    if not (1 <= quality <= 95):
+        raise ValidationError("quality must be between 1 and 95.", {"quality": quality})
+    return compress_image(input_path, output_path, quality=quality, overwrite=True, emit_progress=emit_progress)
 
 
 def handle_jpeg_to_png(params: dict[str, Any], emit_progress: ProgressEmitter = noop_progress) -> dict[str, Any]:

@@ -389,6 +389,51 @@ def organize_pdf_pages(
     return result
 
 
+def compress_pdf(
+    input_path: Path,
+    output_path: Path,
+    *,
+    overwrite: bool = False,
+    password: str | None = None,
+    emit_progress: ProgressEmitter = noop_progress,
+) -> dict[str, Any]:
+    original_bytes = input_path.stat().st_size
+    output = require_output_file(str(output_path), input_path=input_path, overwrite=overwrite)
+    reader = _open_reader(input_path, password)
+    page_count = _page_count(reader)
+
+    writer = PdfWriter()
+    for index, page in enumerate(reader.pages):
+        emit_progress(index / page_count * 0.6, f"Copying page {index + 1}")
+        writer.add_page(page)
+
+    emit_progress(0.7, "Compressing content streams")
+    for page in writer.pages:
+        page.compress_content_streams()
+
+    emit_progress(0.9, "Writing compressed PDF")
+    _write_pdf(writer, output)
+    emit_progress(1.0, "PDF compressed")
+
+    output_bytes = output.stat().st_size
+    saved_bytes = original_bytes - output_bytes
+    saved_pct = round(saved_bytes / original_bytes * 100, 1) if original_bytes > 0 else 0.0
+    result = file_result("pdf.compress", [input_path], [output])
+    result.update({"original_bytes": original_bytes, "output_bytes": output_bytes,
+                   "saved_bytes": saved_bytes, "saved_pct": saved_pct, "page_count": page_count})
+    return result
+
+
+def handle_compress_pdf(params: dict[str, Any], emit_progress: ProgressEmitter = noop_progress) -> dict[str, Any]:
+    return compress_pdf(
+        require_input_file(params.get("input_path")),
+        require_output_file(params.get("output_path"), overwrite=bool_param(params, "overwrite", False)),
+        overwrite=True,
+        password=params.get("password"),
+        emit_progress=emit_progress,
+    )
+
+
 def _page_order_param(params: dict[str, Any]) -> list[int]:
     page_order = params.get("page_order")
     if not isinstance(page_order, list) or not all(isinstance(page, int) for page in page_order):

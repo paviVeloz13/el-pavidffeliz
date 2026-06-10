@@ -9,7 +9,7 @@ from typing import Any
 
 from .errors import AppError, ProtocolError, UnknownOperationError
 from .operations.health import handle_health
-from .operations.image import handle_images_to_pdf, handle_jpeg_to_png, handle_png_to_jpeg
+from .operations.image import handle_compress_image, handle_images_to_pdf, handle_jpeg_to_png, handle_png_to_jpeg
 from .operations.pdf_render import (
     handle_flatten_to_image_pdf,
     handle_pdf_to_jpeg,
@@ -18,6 +18,7 @@ from .operations.pdf_render import (
 )
 from .operations.pdf_overlay import handle_apply_signature, handle_clean_signature
 from .operations.pdf_structure import (
+    handle_compress_pdf,
     handle_delete_pages,
     handle_lock,
     handle_merge,
@@ -48,9 +49,11 @@ OPERATIONS: dict[str, OperationHandler] = {
     "pdf.split_individual": handle_split_individual,
     "pdf.reorder": handle_reorder,
     "pdf.delete_pages": handle_delete_pages,
+    "pdf.compress": handle_compress_pdf,
     "pdf.organize_pages": handle_organize_pages,
     "pdf.lock": handle_lock,
     "pdf.unlock": handle_unlock,
+    "image.compress": handle_compress_image,
     "image.clean_signature": handle_clean_signature,
     "pdf.apply_signature": handle_apply_signature,
 }
