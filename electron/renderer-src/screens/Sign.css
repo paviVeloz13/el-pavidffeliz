@@ -1,0 +1,98 @@
+.sign-screen { max-width: 560px; }
+
+.sign-page-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.sign-page-input {
+  width: 60px;
+  padding: 0.375rem 0.5rem;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  background: var(--color-background-primary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  text-align: center;
+  outline: none;
+  font-family: inherit;
+}
+.sign-page-input:focus { border-color: var(--color-brand); }
+
+.sign-page-of {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.sign-load-btn {
+  padding: 0.3125rem 0.625rem;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  font-family: inherit;
+}
+.sign-load-btn:hover:not(:disabled) { background: var(--color-background-secondary); }
+.sign-load-btn:disabled { opacity: 0.5; cursor: default; }
+
+.sign-preview-wrap {
+  position: relative;
+  display: inline-block;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  user-select: none;
+  max-width: 100%;
+}
+
+.sign-preview-img {
+  display: block;
+  max-width: 100%;
+  max-height: 420px;
+  width: auto;
+  height: auto;
+}
+
+.sig-overlay {
+  position: absolute;
+  pointer-events: none;
+  object-fit: contain;
+}
+
+.sign-clean-btn {
+  margin-top: 0.375rem;
+  margin-bottom: 0.75rem;
+  padding: 0.3125rem 0.625rem;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-block;
+}
+.sign-clean-btn:hover:not(:disabled) { background: var(--color-background-secondary); }
+.sign-clean-btn:disabled { opacity: 0.5; cursor: default; }
+
+.sign-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.sign-slider { flex: 1; accent-color: var(--color-brand); }
+
+.sign-slider-val {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  min-width: 44px;
+  text-align: right;
+}

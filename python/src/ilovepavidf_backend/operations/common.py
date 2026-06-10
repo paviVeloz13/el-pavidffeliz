@@ -86,6 +86,15 @@ def int_param(params: dict[str, Any], field_name: str, default: int | None = Non
     return value
 
 
+def float_param(params: dict[str, Any], field_name: str, default: float | None = None) -> float:
+    value = params.get(field_name, default)
+    if isinstance(value, int):
+        value = float(value)
+    if not isinstance(value, float):
+        raise ValidationError(f"{field_name} must be a number.", {"field": field_name})
+    return value
+
+
 def str_param(params: dict[str, Any], field_name: str, default: str | None = None) -> str:
     value = params.get(field_name, default)
     if not isinstance(value, str) or not value:

@@ -16,6 +16,7 @@ from .operations.pdf_render import (
     handle_pdf_to_png,
     handle_render_preview,
 )
+from .operations.pdf_overlay import handle_apply_signature, handle_clean_signature
 from .operations.pdf_structure import (
     handle_delete_pages,
     handle_lock,
@@ -48,6 +49,8 @@ OPERATIONS: dict[str, OperationHandler] = {
     "pdf.delete_pages": handle_delete_pages,
     "pdf.lock": handle_lock,
     "pdf.unlock": handle_unlock,
+    "image.clean_signature": handle_clean_signature,
+    "pdf.apply_signature": handle_apply_signature,
 }
 
 
