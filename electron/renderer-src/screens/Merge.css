@@ -1,0 +1,15 @@
+.merge-screen { max-width: 560px; }
+
+.name-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  background: var(--color-background-primary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+  outline: none;
+}
+.name-input:focus { border-color: var(--color-brand); }

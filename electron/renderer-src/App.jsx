@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './styles/global.css';
 import Sidebar from './components/Sidebar.jsx';
 import Convert from './screens/Convert.jsx';
+import Merge from './screens/Merge.jsx';
+import Split from './screens/Split.jsx';
 import StubScreen from './screens/StubScreen.jsx';
 import { useStrings } from './i18n/strings.js';
 
@@ -30,8 +32,8 @@ export default function App() {
     switch (screen) {
       case 'convert':  return <Convert s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'organize': return <StubScreen title={s.navOrganize}  sub={s.stubSub} />;
-      case 'merge':    return <StubScreen title={s.navMerge}     sub={s.stubSub} />;
-      case 'split':    return <StubScreen title={s.navSplit}     sub={s.stubSub} />;
+      case 'merge':    return <Merge s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
+      case 'split':    return <Split s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'compress': return <StubScreen title={s.navCompress}  sub={s.stubSub} />;
       case 'edit':     return <StubScreen title={s.navEdit}      sub={s.stubSub} />;
       case 'redact':   return <StubScreen title={s.navRedact}    sub={s.stubSub} />;
