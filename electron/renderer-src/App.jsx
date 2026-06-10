@@ -4,6 +4,8 @@ import Sidebar from './components/Sidebar.jsx';
 import Convert from './screens/Convert.jsx';
 import Merge from './screens/Merge.jsx';
 import Split from './screens/Split.jsx';
+import Lock from './screens/Lock.jsx';
+import Unlock from './screens/Unlock.jsx';
 import StubScreen from './screens/StubScreen.jsx';
 import { useStrings } from './i18n/strings.js';
 
@@ -38,8 +40,8 @@ export default function App() {
       case 'edit':     return <StubScreen title={s.navEdit}      sub={s.stubSub} />;
       case 'redact':   return <StubScreen title={s.navRedact}    sub={s.stubSub} />;
       case 'sign':     return <StubScreen title={s.navSign}      sub={s.stubSub} />;
-      case 'lock':     return <StubScreen title={s.navLock}      sub={s.stubSub} />;
-      case 'unlock':   return <StubScreen title={s.navUnlock}    sub={s.stubSub} />;
+      case 'lock':     return <Lock s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
+      case 'unlock':   return <Unlock s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'history':  return <StubScreen title={s.historyTitle} sub={s.historySub} />;
       case 'settings': return <StubScreen title={s.settingsTitle} sub={s.settingsSub} />;
       default:         return null;
