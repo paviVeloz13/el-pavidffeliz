@@ -10,8 +10,10 @@
  *  - Shut everything down cleanly on quit.
  */
 
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
+const os = require('os');
+const fs = require('fs');
 const { WorkerBridge } = require('./worker-bridge');
 
 // ─── Worker path resolution ────────────────────────────────────────────────
@@ -73,6 +75,40 @@ function createWindow() {
 // The main process then forwards progress and final result to the renderer
 // via per-commandId channels.
 
+// ─── IPC: dialog + shell helpers ──────────────────────────────────────────
+
+ipcMain.handle('app:default-output-dir', () =>
+  path.join(os.homedir(), 'Downloads', 'iLovePaviDF'),
+);
+
+ipcMain.handle('dialog:pick-files', async (_event, filters) => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openFile', 'multiSelections'],
+    filters: filters ?? [
+      { name: 'Supported files', extensions: ['pdf', 'jpg', 'jpeg', 'png'] },
+    ],
+  });
+  return result.canceled ? [] : result.filePaths;
+});
+
+ipcMain.handle('dialog:pick-folder', async (_event, defaultPath) => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    defaultPath,
+    properties: ['openDirectory', 'createDirectory'],
+  });
+  return result.canceled ? null : result.filePaths[0];
+});
+
+ipcMain.handle('shell:show-in-folder', (_event, filePath) => {
+  shell.showItemInFolder(filePath);
+});
+
+ipcMain.handle('fs:ensure-dir', (_event, dirPath) => {
+  fs.mkdirSync(dirPath, { recursive: true });
+});
+
+// ─── IPC: worker:invoke ───────────────────────────────────────────────────
+//
 // commandId is generated in the renderer (preload) so progress listeners are
 // registered before this handle even fires — no race condition possible.
 ipcMain.handle('worker:invoke', async (event, commandId, action, params) => {

@@ -17,16 +17,36 @@ contextBridge.exposeInMainWorld('electronAPI', {
    * @returns {Promise<any>}
    */
   invoke(action, params = {}, onProgress = null) {
-    // Web Crypto API is available in sandboxed preloads; Node's require('crypto') is not.
     const commandId = self.crypto.randomUUID();
-
     if (onProgress) progressCallbacks[commandId] = onProgress;
-
     return ipcRenderer
       .invoke('worker:invoke', commandId, action, params)
-      .finally(() => {
-        delete progressCallbacks[commandId];
-      });
+      .finally(() => { delete progressCallbacks[commandId]; });
+  },
+
+  /** Show a native file picker. Returns array of chosen file paths. */
+  pickFiles(filters) {
+    return ipcRenderer.invoke('dialog:pick-files', filters);
+  },
+
+  /** Show a native folder picker. Returns the chosen path or null. */
+  pickFolder(defaultPath) {
+    return ipcRenderer.invoke('dialog:pick-folder', defaultPath);
+  },
+
+  /** Reveal a file in Finder / Explorer. */
+  showInFolder(filePath) {
+    return ipcRenderer.invoke('shell:show-in-folder', filePath);
+  },
+
+  /** Get the default output directory (~/ Downloads/iLovePaviDF). */
+  getDefaultOutputDir() {
+    return ipcRenderer.invoke('app:default-output-dir');
+  },
+
+  /** Create a directory (and parents) if it doesn't exist. */
+  ensureDir(dirPath) {
+    return ipcRenderer.invoke('fs:ensure-dir', dirPath);
   },
 
   platform: process.platform,
