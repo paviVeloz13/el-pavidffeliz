@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar.jsx';
 import Convert from './screens/Convert.jsx';
 import Merge from './screens/Merge.jsx';
 import Split from './screens/Split.jsx';
+import Organize from './screens/Organize.jsx';
 import Lock from './screens/Lock.jsx';
 import Unlock from './screens/Unlock.jsx';
 import Sign from './screens/Sign.jsx';
@@ -34,7 +35,7 @@ export default function App() {
   function renderScreen() {
     switch (screen) {
       case 'convert':  return <Convert s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
-      case 'organize': return <StubScreen title={s.navOrganize}  sub={s.stubSub} />;
+      case 'organize': return <Organize s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'merge':    return <Merge s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'split':    return <Split s={s} outputDir={outputDir} onPickFolder={pickFolder} />;
       case 'compress': return <StubScreen title={s.navCompress}  sub={s.stubSub} />;

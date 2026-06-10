@@ -353,6 +353,42 @@ def unlock_pdf(
     return result
 
 
+def organize_pdf_pages(
+    input_path: Path,
+    output_path: Path,
+    page_order: list[int],
+    *,
+    overwrite: bool = False,
+    password: str | None = None,
+    emit_progress: ProgressEmitter = noop_progress,
+) -> dict[str, Any]:
+    """Keep and reorder a subset of pages in one pass (handles delete + reorder together)."""
+    output = require_output_file(str(output_path), input_path=input_path, overwrite=overwrite)
+    reader = _open_reader(input_path, password)
+    page_count = _page_count(reader)
+
+    if not page_order:
+        raise ValidationError("page_order must contain at least one page number.")
+    if len(set(page_order)) != len(page_order):
+        raise ValidationError("page_order must not contain duplicate page numbers.", {"page_order": page_order})
+    if any(p < 1 or p > page_count for p in page_order):
+        raise ValidationError("page_order contains an out-of-range page number.", {"page_count": page_count})
+
+    writer = PdfWriter()
+    for index, page_number in enumerate(page_order):
+        emit_progress(index / len(page_order), f"Adding page {page_number}")
+        writer.add_page(reader.pages[page_number - 1])
+
+    _write_pdf(writer, output)
+    emit_progress(1.0, "Pages organized")
+
+    result = file_result("pdf.organize_pages", [input_path], [output])
+    result["page_order"] = page_order
+    result["original_page_count"] = page_count
+    result["output_page_count"] = len(page_order)
+    return result
+
+
 def _page_order_param(params: dict[str, Any]) -> list[int]:
     page_order = params.get("page_order")
     if not isinstance(page_order, list) or not all(isinstance(page, int) for page in page_order):
@@ -397,6 +433,17 @@ def handle_split_individual(params: dict[str, Any], emit_progress: ProgressEmitt
         require_input_file(params.get("input_path")),
         require_output_dir(params.get("output_dir")),
         overwrite=bool_param(params, "overwrite", False),
+        password=params.get("password"),
+        emit_progress=emit_progress,
+    )
+
+
+def handle_organize_pages(params: dict[str, Any], emit_progress: ProgressEmitter = noop_progress) -> dict[str, Any]:
+    return organize_pdf_pages(
+        require_input_file(params.get("input_path")),
+        require_output_file(params.get("output_path"), overwrite=bool_param(params, "overwrite", False)),
+        _page_order_param(params),
+        overwrite=True,
         password=params.get("password"),
         emit_progress=emit_progress,
     )
