@@ -3,8 +3,7 @@
 **Offline-first PDF and image toolkit for macOS and Windows.**  
 No subscriptions. No internet connection. No data leaves your machine.
 
-<!-- Add a screenshot here: drag an image into this repo and replace the line below -->
-<!-- ![El PaviDFeliz screenshot](docs/screenshot.png) -->
+![El PaviDFeliz screenshot](docs/screenshot.png)
 
 ---
 
