@@ -1,0 +1,6 @@
+-r requirements.txt
+
+# Test/development tooling. Milestone 1 tests use stdlib unittest so installing
+# this file is optional until broader backend development begins.
+pytest==8.3.2
+pyinstaller==6.9.0

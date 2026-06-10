@@ -1,0 +1,449 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{display:flex;height:700px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary);font-family:var(--font-sans)}
+.sidebar{width:215px;min-width:215px;background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;padding:20px 0;overflow-y:auto}
+.logo{padding:0 18px 14px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:10px}
+.logo-name{font-size:17px;font-weight:500;color:var(--color-text-primary)}.logo-name span{color:#E24B4A}
+.logo-tag{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.lang-row{padding:0 12px 12px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px}
+.lang-sel{width:100%;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.nav-section{font-size:10px;font-weight:500;color:var(--color-text-tertiary);padding:10px 18px 4px;letter-spacing:.08em}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 18px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);border-left:3px solid transparent}
+.nav-item i{font-size:18px;flex-shrink:0}
+.nav-item:hover{background:var(--color-background-primary)}
+.nav-item.active{color:#185FA5;background:var(--color-background-info);border-left:3px solid #185FA5;font-weight:500}
+.nav-item.active i{color:#185FA5}
+.main{flex:1;overflow-y:auto;padding:22px 26px;background:var(--color-background-tertiary)}
+.screen{display:none}.screen.active{display:block}
+.screen-title{font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.screen-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:16px}
+.drop-zone{border:2px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:var(--color-background-primary);padding:24px 20px;text-align:center;cursor:pointer}
+.drop-zone:hover{border-color:#378ADD}
+.drop-icon{font-size:32px;color:var(--color-text-tertiary);margin-bottom:7px}
+.drop-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.drop-sub{font-size:12px;color:var(--color-text-secondary)}
+.detect-badge{display:inline-flex;align-items:center;gap:5px;margin-top:9px;padding:5px 13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.detect-badge i{font-size:13px;color:#185FA5}
+.detected-banner{background:var(--color-background-info);border:0.5px solid var(--color-border-info);border-radius:var(--border-radius-md);padding:9px 13px;margin:11px 0;display:flex;align-items:center;gap:9px;font-size:13px;color:#0C447C}
+.detected-banner i{font-size:16px;color:#185FA5;flex-shrink:0}
+.sec-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin:12px 0 7px;letter-spacing:.05em}
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.tool-btn{padding:10px 6px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);text-align:center;cursor:pointer;font-size:11px;color:var(--color-text-secondary);line-height:1.3}
+.tool-btn i{display:block;font-size:18px;margin-bottom:4px;color:var(--color-text-tertiary)}
+.tool-btn.sel{border:2px solid #185FA5;color:#185FA5;background:var(--color-background-info)}
+.tool-btn.sel i{color:#185FA5}
+/* Join/Separate toggle */
+.output-toggle{display:flex;gap:0;margin-bottom:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);overflow:hidden}
+.ot-btn{flex:1;padding:9px 8px;background:var(--color-background-primary);border:none;font-size:12px;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;border-right:0.5px solid var(--color-border-secondary)}
+.ot-btn:last-child{border-right:none}
+.ot-btn i{font-size:15px}
+.ot-btn.sel{background:var(--color-background-info);color:#185FA5;font-weight:500}
+.ot-btn.sel i{color:#185FA5}
+.out-row{display:flex;align-items:center;gap:9px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 13px;margin-bottom:12px}
+.out-row i{font-size:17px;color:var(--color-text-secondary)}
+.out-path{flex:1;font-size:12px;color:var(--color-text-secondary)}
+.out-change{font-size:12px;color:#185FA5;cursor:pointer;white-space:nowrap}
+.pri-btn{width:100%;padding:13px;background:#185FA5;color:#fff;border:none;border-radius:var(--border-radius-md);font-size:15px;font-weight:500;cursor:pointer}
+.pri-btn.danger{background:#A32D2D}
+.prog-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;margin-top:10px}
+.prog-file{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.prog-file i{font-size:15px;color:var(--color-text-secondary)}
+.prog-fn{flex:1;font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.prog-bg{height:7px;border-radius:4px;background:var(--color-border-tertiary)}
+.prog-bar{height:7px;border-radius:4px;background:#185FA5;width:72%}
+.prog-done{display:flex;align-items:center;gap:7px;padding:6px 0 2px}
+.prog-show{font-size:12px;color:#185FA5;cursor:pointer;margin-left:auto}
+.warn-box{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:10px 13px;margin-bottom:12px;font-size:12px;color:var(--color-text-warning);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.warn-box i{font-size:16px;flex-shrink:0;margin-top:1px}
+.info-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 13px;margin-bottom:12px;font-size:12px;color:var(--color-text-secondary);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.info-box i{font-size:15px;flex-shrink:0;margin-top:1px}
+.flag-box{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:10px 13px;margin-bottom:12px;font-size:12px;color:var(--color-text-warning);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.flag-box i{font-size:16px;flex-shrink:0;margin-top:1px}
+.canvas-area{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);height:90px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;color:var(--color-text-tertiary);font-size:12px;cursor:crosshair}
+.sig-styles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.sig-style{padding:12px 8px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);text-align:center;cursor:pointer;font-size:12px;color:var(--color-text-secondary)}
+.sig-style.sel{border:2px solid #185FA5;background:var(--color-background-info);color:#185FA5}
+.page-prev{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
+.pg{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);aspect-ratio:0.77;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--color-text-tertiary);position:relative}
+.pg.sel-pg{border:2px solid #E24B4A}
+.pg-del{position:absolute;top:4px;right:4px;width:17px;height:17px;background:#E24B4A;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px}
+.pg-num{font-size:10px;color:var(--color-text-tertiary);margin-top:3px}
+.pwd-row{display:flex;gap:8px;margin-bottom:12px}
+.pwd-row input{flex:1;padding:9px 12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.hist-filters{display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap}
+.hist-filters select{padding:6px 9px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.hist-table{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
+.hr{display:grid;grid-template-columns:1fr 96px 80px 30px;align-items:center;padding:10px 13px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px}
+.hr:last-child{border-bottom:none}
+.hr.hh{background:var(--color-background-secondary);font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em}
+.hname{color:#185FA5;cursor:pointer;font-weight:500}
+.hop{font-size:11px;padding:2px 7px;border-radius:10px;background:var(--color-background-info);color:#185FA5;display:inline-block}
+.hdate{color:var(--color-text-secondary)}
+.hmiss{color:var(--color-text-tertiary);text-decoration:line-through}
+.scard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 18px;margin-bottom:12px}
+.scard-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:9px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.srow:last-child{border-bottom:none}
+.slabel{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.shint{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.saction{font-size:12px;color:#185FA5;cursor:pointer;padding:5px 10px;border:0.5px solid #185FA5;border-radius:var(--border-radius-md);white-space:nowrap}
+/* Redact preview */
+.redact-preview{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:13px 15px;margin-bottom:12px;position:relative;min-height:120px}
+.doc-line{height:7px;border-radius:3px;background:var(--color-border-tertiary);margin-bottom:6px}
+.doc-line.s{width:60%}.doc-line.m{width:80%}
+.redact-bar{height:10px;border-radius:3px;background:#111;margin-bottom:6px;display:flex;align-items:center;padding:0 6px}
+.erase-bar{height:10px;border-radius:3px;background:#e8e8e8;border:0.5px dashed var(--color-border-secondary);margin-bottom:6px}
+.redact-label{font-size:8px;color:#fff;letter-spacing:.06em;font-weight:500}
+.redact-bar.w60{width:60%}.redact-bar.w45{width:45%}.erase-bar.w55{width:55%}
+/* Censor tool tabs */
+.censor-tabs{display:flex;gap:0;margin-bottom:14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);overflow:hidden}
+.ctab{flex:1;padding:10px 8px;background:var(--color-background-primary);border:none;font-size:12px;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;border-right:0.5px solid var(--color-border-secondary)}
+.ctab:last-child{border-right:none}
+.ctab i{font-size:16px}
+.ctab.sel{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500}
+</style>
+
+<h2 class="sr-only">iLovePaviDF — UI v3 con herramienta borrar, toggle unir/separar y censura actualizada</h2>
+<div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:7px">Haz clic en cada sección — actualizado: Convertir, Censurar texto</div>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-name"><span>i</span>LovePavi<span>DF</span></div>
+      <div class="logo-tag">Conversor de archivos</div>
+    </div>
+    <div class="lang-row">
+      <select class="lang-sel" aria-label="Idioma">
+        <option>🌐 Español</option><option>🌐 English</option><option>🌐 日本語</option><option>🌐 한국어</option>
+      </select>
+    </div>
+    <div class="nav-section">CONVERSIÓN</div>
+    <div class="nav-item active" onclick="show('convertir',this)"><i class="ti ti-arrows-exchange" aria-hidden="true"></i>Convertir</div>
+    <div class="nav-section">HERRAMIENTAS PDF</div>
+    <div class="nav-item" onclick="show('organizar',this)"><i class="ti ti-layout-grid" aria-hidden="true"></i>Organizar páginas</div>
+    <div class="nav-item" onclick="show('combinar',this)"><i class="ti ti-git-merge" aria-hidden="true"></i>Combinar PDFs</div>
+    <div class="nav-item" onclick="show('dividir',this)"><i class="ti ti-scissors" aria-hidden="true"></i>Dividir PDF</div>
+    <div class="nav-item" onclick="show('comprimir',this)"><i class="ti ti-file-zip" aria-hidden="true"></i>Comprimir</div>
+    <div class="nav-item" onclick="show('editar',this)"><i class="ti ti-edit" aria-hidden="true"></i>Editar PDF</div>
+    <div class="nav-item" onclick="show('censurar',this)"><i class="ti ti-eye-off" aria-hidden="true"></i>Censurar texto</div>
+    <div class="nav-item" onclick="show('firmar',this)"><i class="ti ti-signature" aria-hidden="true"></i>Firmar PDF</div>
+    <div class="nav-item" onclick="show('bloquear',this)"><i class="ti ti-lock" aria-hidden="true"></i>Bloquear PDF</div>
+    <div class="nav-item" onclick="show('desbloquear',this)"><i class="ti ti-lock-open" aria-hidden="true"></i>Desbloquear PDF</div>
+    <div class="nav-section">APP</div>
+    <div class="nav-item" onclick="show('historial',this)"><i class="ti ti-history" aria-hidden="true"></i>Historial</div>
+    <div class="nav-item" onclick="show('ajustes',this)"><i class="ti ti-settings" aria-hidden="true"></i>Ajustes</div>
+  </div>
+
+  <div class="main">
+
+    <!-- ★ CONVERTIR — updated with join/separate toggle -->
+    <div class="screen active" id="screen-convertir">
+      <div class="screen-title">Convertir archivos</div>
+      <div class="screen-sub">Arrastra tus archivos — el formato se detecta automáticamente.</div>
+      <div class="drop-zone">
+        <div class="drop-icon"><i class="ti ti-cloud-upload" aria-hidden="true"></i></div>
+        <div class="drop-title">Arrastra los archivos aquí</div>
+        <div class="drop-sub">PDF, JPEG o PNG — hasta 50 archivos o una carpeta entera</div>
+        <div class="detect-badge"><i class="ti ti-cpu" aria-hidden="true"></i>Detección automática de formato</div>
+      </div>
+      <div class="detected-banner"><i class="ti ti-file-check" aria-hidden="true"></i><span>Se detectaron <strong>6 archivos JPEG</strong> — elige el formato de salida:</span></div>
+      <div class="sec-label">CONVERTIR A</div>
+      <div class="tool-grid">
+        <div class="tool-btn" onclick="selTool(this,updateToggle)"><i class="ti ti-photo" aria-hidden="true"></i>JPEG → PNG</div>
+        <div class="tool-btn sel" onclick="selTool(this,updateToggle)"><i class="ti ti-file-text" aria-hidden="true"></i>Imágenes → PDF</div>
+        <div class="tool-btn" onclick="selTool(this,updateToggle)"><i class="ti ti-photo-up" aria-hidden="true"></i>PDF → PNG</div>
+        <div class="tool-btn" onclick="selTool(this,updateToggle)"><i class="ti ti-photo" aria-hidden="true"></i>PDF → JPEG</div>
+        <div class="tool-btn" onclick="selTool(this,updateToggle)"><i class="ti ti-file-type-jpg" aria-hidden="true"></i>PNG → JPEG</div>
+      </div>
+      <div class="sec-label">RESULTADO</div>
+      <div class="output-toggle" id="output-toggle">
+        <button class="ot-btn" id="ot-sep" onclick="selToggle('sep')"><i class="ti ti-files" aria-hidden="true"></i>Archivos separados</button>
+        <button class="ot-btn sel" id="ot-join" onclick="selToggle('join')"><i class="ti ti-file-plus" aria-hidden="true"></i>Unir en un solo PDF</button>
+      </div>
+      <div id="toggle-hint" style="font-size:11px;color:var(--color-text-secondary);margin:-6px 0 12px;padding:0 2px">6 imágenes → 1 PDF (cada imagen será una página)</div>
+      <div class="sec-label">GUARDAR EN</div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn" onclick="showProg()"><i class="ti ti-bolt" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Convertir archivos</button>
+      <div id="prog-area" style="display:none">
+        <div class="prog-card"><div class="prog-file"><i class="ti ti-photo" aria-hidden="true"></i><span class="prog-fn">foto_01.jpg … foto_06.jpg</span><span style="font-size:11px;color:var(--color-text-secondary)">72%</span></div><div class="prog-bg"><div class="prog-bar"></div></div></div>
+        <div class="prog-card" style="margin-top:7px"><div class="prog-done"><i class="ti ti-circle-check" style="font-size:15px;color:var(--color-text-success)" aria-hidden="true"></i><span style="font-size:12px;font-weight:500;color:var(--color-text-success)">documento_unido.pdf — listo</span><span class="prog-show"><i class="ti ti-folder-open" style="font-size:12px;vertical-align:-1px;margin-right:3px" aria-hidden="true"></i>Mostrar en carpeta</span></div></div>
+      </div>
+    </div>
+
+    <!-- ORGANIZAR -->
+    <div class="screen" id="screen-organizar">
+      <div class="screen-title">Organizar páginas</div>
+      <div class="screen-sub">Reordena o elimina páginas. Arrastra las miniaturas para cambiar el orden.</div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title">Abre un PDF</div><div class="drop-sub">Arrastra el archivo o haz clic para buscarlo</div></div>
+      <div class="sec-label">PÁGINAS — arrastra para reordenar · ✕ para eliminar</div>
+      <div class="page-prev">
+        <div class="pg sel-pg"><i class="ti ti-file-text" style="font-size:19px" aria-hidden="true"></i><div class="pg-num">Pág. 1</div><div class="pg-del">✕</div></div>
+        <div class="pg"><i class="ti ti-file-text" style="font-size:19px" aria-hidden="true"></i><div class="pg-num">Pág. 2</div><div class="pg-del">✕</div></div>
+        <div class="pg"><i class="ti ti-file-text" style="font-size:19px" aria-hidden="true"></i><div class="pg-num">Pág. 3</div><div class="pg-del">✕</div></div>
+        <div class="pg"><i class="ti ti-file-text" style="font-size:19px" aria-hidden="true"></i><div class="pg-num">Pág. 4</div><div class="pg-del">✕</div></div>
+      </div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-device-floppy" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Guardar PDF reorganizado</button>
+    </div>
+
+    <!-- COMBINAR -->
+    <div class="screen" id="screen-combinar">
+      <div class="screen-title">Combinar PDFs</div>
+      <div class="screen-sub">Arrastra varios archivos PDF y ordénalos antes de combinar.</div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title">Arrastra los PDFs aquí</div><div class="drop-sub">Puedes añadir varios archivos a la vez</div></div>
+      <div class="sec-label">ARCHIVOS — arrastra para reordenar</div>
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden;margin-bottom:12px">
+        <div style="display:grid;grid-template-columns:24px 1fr 72px 24px;align-items:center;padding:10px 13px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px"><i class="ti ti-grip-vertical" style="color:var(--color-text-tertiary)" aria-hidden="true"></i><span style="font-weight:500">contrato_enero.pdf</span><span style="color:var(--color-text-tertiary)">2.4 MB</span><i class="ti ti-trash" style="color:var(--color-text-tertiary);cursor:pointer" aria-hidden="true"></i></div>
+        <div style="display:grid;grid-template-columns:24px 1fr 72px 24px;align-items:center;padding:10px 13px;font-size:12px"><i class="ti ti-grip-vertical" style="color:var(--color-text-tertiary)" aria-hidden="true"></i><span style="font-weight:500">anexo_final.pdf</span><span style="color:var(--color-text-tertiary)">890 KB</span><i class="ti ti-trash" style="color:var(--color-text-tertiary);cursor:pointer" aria-hidden="true"></i></div>
+      </div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-git-merge" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Combinar PDFs</button>
+    </div>
+
+    <!-- DIVIDIR -->
+    <div class="screen" id="screen-dividir">
+      <div class="screen-title">Dividir PDF</div>
+      <div class="screen-sub">Extrae páginas o divide el archivo en partes.</div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title">Abre el PDF a dividir</div><div class="drop-sub">Arrastra el archivo o haz clic para buscarlo</div></div>
+      <div class="sec-label">MODO DE DIVISIÓN</div>
+      <div class="tool-grid" style="margin-bottom:12px">
+        <div class="tool-btn sel" onclick="selTool(this)"><i class="ti ti-cut" aria-hidden="true"></i>Por rango</div>
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-number" aria-hidden="true"></i>Cada N páginas</div>
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-file-export" aria-hidden="true"></i>Página individual</div>
+      </div>
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 13px;margin-bottom:12px;display:flex;align-items:center;gap:10px;font-size:13px">
+        <span style="color:var(--color-text-secondary)">Páginas:</span>
+        <input type="text" value="1-3" style="width:70px;padding:6px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px">
+        <span style="color:var(--color-text-tertiary);font-size:12px">p. ej. 1-3, 5, 7-9</span>
+      </div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-scissors" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Dividir PDF</button>
+    </div>
+
+    <!-- COMPRIMIR -->
+    <div class="screen" id="screen-comprimir">
+      <div class="screen-title">Comprimir archivos</div>
+      <div class="screen-sub">Reduce el tamaño de PDFs, JPEG y PNG.</div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-cloud-upload" aria-hidden="true"></i></div><div class="drop-title">Arrastra los archivos aquí</div><div class="drop-sub">PDF, JPEG o PNG</div></div>
+      <div class="sec-label">NIVEL DE COMPRESIÓN</div>
+      <div class="tool-grid" style="margin-bottom:10px">
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-battery-1" aria-hidden="true"></i>Baja</div>
+        <div class="tool-btn sel" onclick="selTool(this)"><i class="ti ti-battery-2" aria-hidden="true"></i>Media</div>
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-battery-4" aria-hidden="true"></i>Alta</div>
+      </div>
+      <div class="detected-banner"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Ahorro estimado: <strong>informe_2025.pdf</strong> — 4.2 MB → 1.8 MB (−57%)</span></div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-file-zip" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Comprimir archivos</button>
+    </div>
+
+    <!-- EDITAR PDF -->
+    <div class="screen" id="screen-editar">
+      <div class="screen-title">Editar PDF</div>
+      <div class="screen-sub">Añade contenido encima del PDF. El archivo original nunca se modifica.</div>
+      <div class="flag-box"><i class="ti ti-alert-triangle" aria-hidden="true"></i><span>Solo se puede añadir contenido nuevo. Para ocultar texto usa <strong>Censurar texto</strong>. Para borrar contenido visualmente usa la herramienta <strong>Borrar</strong> en Censurar.</span></div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title">Abre el PDF a editar</div><div class="drop-sub">Arrastra el archivo o haz clic para buscarlo</div></div>
+      <div class="sec-label">HERRAMIENTA</div>
+      <div class="tool-grid">
+        <div class="tool-btn sel" onclick="selTool(this)"><i class="ti ti-text-size" aria-hidden="true"></i>Añadir texto</div>
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-highlight" aria-hidden="true"></i>Resaltar</div>
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-strikethrough" aria-hidden="true"></i>Tachar</div>
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-note" aria-hidden="true"></i>Nota</div>
+        <div class="tool-btn" onclick="selTool(this)"><i class="ti ti-photo" aria-hidden="true"></i>Insertar imagen</div>
+      </div>
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:9px 13px;margin-bottom:12px;display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+        <span style="font-size:12px;color:var(--color-text-secondary)">Fuente:</span>
+        <select style="padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md)"><option>Helvetica</option><option>Times</option><option>Courier</option></select>
+        <select style="padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md)"><option>12pt</option><option>16pt</option><option>20pt</option><option>24pt</option></select>
+        <div style="display:flex;gap:5px">
+          <div style="width:20px;height:20px;border-radius:3px;background:#111;border:0.5px solid var(--color-border-secondary);cursor:pointer"></div>
+          <div style="width:20px;height:20px;border-radius:3px;background:#E24B4A;border:0.5px solid var(--color-border-secondary);cursor:pointer"></div>
+          <div style="width:20px;height:20px;border-radius:3px;background:#185FA5;border:0.5px solid var(--color-border-secondary);cursor:pointer"></div>
+        </div>
+      </div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-device-floppy" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Guardar PDF editado</button>
+    </div>
+
+    <!-- ★ CENSURAR — updated with redact + erase tabs -->
+    <div class="screen" id="screen-censurar">
+      <div class="screen-title">Censurar texto</div>
+      <div class="screen-sub">Oculta o borra contenido de forma permanente dibujando bloques sobre el documento.</div>
+
+      <div class="censor-tabs">
+        <button class="ctab sel" id="ctab-redact" onclick="selCensor('redact')"><i class="ti ti-eye-off" aria-hidden="true"></i>Redactar — bloque negro</button>
+        <button class="ctab" id="ctab-erase" onclick="selCensor('erase')"><i class="ti ti-eraser" aria-hidden="true"></i>Borrar — bloque blanco</button>
+      </div>
+
+      <div id="censor-redact-info">
+        <div class="warn-box"><i class="ti ti-alert-triangle" aria-hidden="true"></i><span>El documento guardado convertirá todas las páginas a imagen. El texto censurado <strong>no será recuperable</strong> ni seleccionable.</span></div>
+      </div>
+      <div id="censor-erase-info" style="display:none">
+        <div class="info-box"><i class="ti ti-info-circle" aria-hidden="true"></i><span>Borra contenido visualmente con un bloque blanco — útil para eliminar logos, marcas de agua o fechas. El resultado también se guarda como imagen (texto no seleccionable).</span></div>
+      </div>
+
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title">Abre el PDF</div><div class="drop-sub">Arrastra el archivo o haz clic para buscarlo</div></div>
+
+      <div class="sec-label">VISTA PREVIA — arrastra para marcar áreas</div>
+      <div class="redact-preview">
+        <div class="doc-line"></div>
+        <div class="doc-line s"></div>
+        <div id="preview-bar-1" class="redact-bar w60"><span class="redact-label">CONFIDENCIAL</span></div>
+        <div class="doc-line m"></div>
+        <div class="doc-line"></div>
+        <div id="preview-bar-2" class="redact-bar w45"><span class="redact-label">CONFIDENCIAL</span></div>
+        <div class="doc-line s"></div>
+        <div style="position:absolute;top:8px;right:8px;font-size:10px;color:var(--color-text-tertiary);background:var(--color-background-secondary);padding:3px 7px;border-radius:var(--border-radius-md)">Pág. 1 de 3</div>
+      </div>
+
+      <div id="censor-options-redact">
+        <div class="sec-label">OPCIONES</div>
+        <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:11px 14px;margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Color del bloque</span>
+            <div style="display:flex;gap:7px"><div style="width:22px;height:22px;border-radius:3px;background:#111;border:2px solid #185FA5;cursor:pointer"></div><div style="width:22px;height:22px;border-radius:3px;background:#A32D2D;border:0.5px solid var(--color-border-secondary);cursor:pointer"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Etiqueta</span>
+            <input type="text" value="CONFIDENCIAL" style="width:140px;padding:6px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px" aria-label="Etiqueta">
+          </div>
+        </div>
+      </div>
+      <div id="censor-options-erase" style="display:none">
+        <div class="info-box"><i class="ti ti-check-circle" aria-hidden="true"></i><span>El bloque blanco no tiene etiqueta. Dibuja sobre el área a borrar y guarda.</span></div>
+      </div>
+
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn danger" id="censor-save-btn"><i class="ti ti-eye-off" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Aplicar censura y guardar</button>
+    </div>
+
+    <!-- FIRMAR -->
+    <div class="screen" id="screen-firmar">
+      <div class="screen-title">Firmar PDF</div>
+      <div class="screen-sub">Crea tu firma y colócala en el documento. Se guarda siempre como archivo nuevo.</div>
+      <div class="info-box"><i class="ti ti-info-circle" aria-hidden="true"></i><span>Firma visual — equivalente a la firma de Vista Previa en macOS. No es una firma digital certificada.</span></div>
+      <div class="sec-label">TIPO DE FIRMA</div>
+      <div class="sig-styles">
+        <div class="sig-style sel" onclick="selSig(this)"><i class="ti ti-writing" style="display:block;font-size:18px;margin-bottom:4px" aria-hidden="true"></i>Dibujar</div>
+        <div class="sig-style" onclick="selSig(this)"><i class="ti ti-keyboard" style="display:block;font-size:18px;margin-bottom:4px" aria-hidden="true"></i>Escribir nombre</div>
+        <div class="sig-style" onclick="selSig(this)"><i class="ti ti-upload" style="display:block;font-size:18px;margin-bottom:4px" aria-hidden="true"></i>Subir imagen</div>
+      </div>
+      <div class="canvas-area">Dibuja tu firma aquí con el ratón o trackpad</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button style="flex:1;padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer"><i class="ti ti-eraser" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Borrar</button>
+        <button style="flex:1;padding:8px;border:0.5px solid #185FA5;border-radius:var(--border-radius-md);font-size:12px;background:var(--color-background-info);color:#185FA5;cursor:pointer"><i class="ti ti-check" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Usar esta firma</button>
+      </div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title" style="font-size:14px">Abre el PDF a firmar</div><div class="drop-sub">Arrastra el archivo o haz clic para buscarlo</div></div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-signature" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Colocar firma y guardar</button>
+    </div>
+
+    <!-- BLOQUEAR -->
+    <div class="screen" id="screen-bloquear">
+      <div class="screen-title">Bloquear PDF</div>
+      <div class="screen-sub">Añade una contraseña para proteger el acceso al documento.</div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title">Abre el PDF a bloquear</div><div class="drop-sub">Arrastra el archivo o haz clic para buscarlo</div></div>
+      <div class="sec-label">CONTRASEÑA</div>
+      <div class="pwd-row">
+        <input type="password" placeholder="Nueva contraseña" aria-label="Nueva contraseña">
+        <input type="password" placeholder="Confirmar contraseña" aria-label="Confirmar contraseña">
+      </div>
+      <div class="info-box"><i class="ti ti-shield-lock" aria-hidden="true"></i><span>Cifrado AES de 128 bits. Guarda tu contraseña en un lugar seguro — no se puede recuperar si se pierde.</span></div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-lock" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Bloquear PDF</button>
+    </div>
+
+    <!-- DESBLOQUEAR -->
+    <div class="screen" id="screen-desbloquear">
+      <div class="screen-title">Desbloquear PDF</div>
+      <div class="screen-sub">Elimina la contraseña de un PDF que ya tienes autorización para usar.</div>
+      <div class="drop-zone" style="margin-bottom:12px"><div class="drop-icon"><i class="ti ti-upload" aria-hidden="true"></i></div><div class="drop-title">Abre el PDF bloqueado</div><div class="drop-sub">Arrastra el archivo o haz clic para buscarlo</div></div>
+      <div class="sec-label">CONTRASEÑA ACTUAL</div>
+      <div class="pwd-row" style="margin-bottom:12px"><input type="password" placeholder="Introduce la contraseña" aria-label="Contraseña actual"></div>
+      <div class="info-box"><i class="ti ti-info-circle" aria-hidden="true"></i><span>Solo puedes desbloquear PDFs cuya contraseña conoces. El archivo desencriptado se guarda como copia nueva.</span></div>
+      <div class="out-row"><i class="ti ti-folder" aria-hidden="true"></i><span class="out-path">~/Descargas/iLovePaviDF</span><span class="out-change">Cambiar</span></div>
+      <button class="pri-btn"><i class="ti ti-lock-open" style="vertical-align:-2px;margin-right:7px" aria-hidden="true"></i>Desbloquear PDF</button>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="screen" id="screen-historial">
+      <div class="screen-title">Historial</div>
+      <div class="screen-sub">Haz clic en el nombre del archivo para abrir su carpeta.</div>
+      <div class="hist-filters">
+        <select aria-label="Filtrar operación"><option>Todas las operaciones</option><option>PDF → JPEG</option><option>Imágenes → PDF</option><option>Combinar</option><option>Comprimir</option><option>Firmar</option><option>Bloquear</option><option>Editar</option><option>Censurar</option><option>Borrar</option></select>
+        <select aria-label="Filtrar fecha"><option>Todas las fechas</option><option>Hoy</option><option>Esta semana</option><option>Este mes</option></select>
+      </div>
+      <div class="hist-table">
+        <div class="hr hh"><div>Archivo</div><div>Operación</div><div>Fecha</div><div></div></div>
+        <div class="hr"><div><span class="hname">informe_censurado.pdf</span><div style="font-size:10px;color:var(--color-text-tertiary);margin-top:1px">~/Descargas/iLovePaviDF</div></div><div><span class="hop">Censurar</span></div><div class="hdate">Hoy 15:02</div><div style="cursor:pointer;color:var(--color-text-tertiary);text-align:center"><i class="ti ti-trash" style="font-size:13px" aria-hidden="true"></i></div></div>
+        <div class="hr"><div><span class="hname">fotos_unidas.pdf</span><div style="font-size:10px;color:var(--color-text-tertiary);margin-top:1px">~/Descargas/iLovePaviDF</div></div><div><span class="hop">Imgs → PDF</span></div><div class="hdate">Hoy 14:30</div><div style="cursor:pointer;color:var(--color-text-tertiary);text-align:center"><i class="ti ti-trash" style="font-size:13px" aria-hidden="true"></i></div></div>
+        <div class="hr"><div><span class="hname">contrato_firmado.pdf</span><div style="font-size:10px;color:var(--color-text-tertiary);margin-top:1px">~/Escritorio/Trabajo</div></div><div><span class="hop">Firmar</span></div><div class="hdate">Ayer</div><div style="cursor:pointer;color:var(--color-text-tertiary);text-align:center"><i class="ti ti-trash" style="font-size:13px" aria-hidden="true"></i></div></div>
+        <div class="hr"><div><span class="hname">presupuesto_bloqueado.pdf</span><div style="font-size:10px;color:var(--color-text-tertiary);margin-top:1px">~/Descargas/iLovePaviDF</div></div><div><span class="hop">Bloquear</span></div><div class="hdate">1 jun</div><div style="cursor:pointer;color:var(--color-text-tertiary);text-align:center"><i class="ti ti-trash" style="font-size:13px" aria-hidden="true"></i></div></div>
+      </div>
+    </div>
+
+    <!-- AJUSTES -->
+    <div class="screen" id="screen-ajustes">
+      <div class="screen-title">Ajustes</div>
+      <div class="screen-sub">Las preferencias se guardan automáticamente.</div>
+      <div class="scard">
+        <div class="scard-title">Carpeta de salida</div>
+        <div class="srow"><div><div class="slabel">Ubicación predeterminada</div><div class="shint">~/Descargas/iLovePaviDF</div></div><span class="saction">Cambiar carpeta</span></div>
+        <div class="srow"><div><div class="slabel">Recordar última carpeta usada</div><div class="shint">Cada herramienta recuerda dónde guardaste</div></div><input type="checkbox" checked style="width:20px;height:20px;cursor:pointer" aria-label="Recordar última carpeta"></div>
+      </div>
+      <div class="scard">
+        <div class="scard-title">Historial</div>
+        <div class="srow"><div><div class="slabel">Conservar historial durante</div><div class="shint">Las entradas antiguas se eliminan automáticamente</div></div><select style="padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md)"><option>30 días</option><option>60 días</option><option>Siempre</option></select></div>
+        <div class="srow"><div><div class="slabel">Borrar todo el historial</div><div class="shint">Esta acción no se puede deshacer</div></div><span class="saction" style="color:#A32D2D;border-color:#A32D2D">Borrar historial</span></div>
+      </div>
+      <div class="scard">
+        <div class="scard-title">Pantalla</div>
+        <div class="srow"><div><div class="slabel">Tamaño del texto</div><div class="shint">Afecta etiquetas y botones</div></div><select style="padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md)"><option>Normal</option><option>Grande</option><option>Muy grande</option></select></div>
+        <div class="srow"><div><div class="slabel">Idioma</div><div class="shint">También disponible en la barra lateral</div></div><select style="padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md)"><option>Español</option><option>English</option><option>日本語</option><option>한국어</option></select></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(name,el){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('screen-'+name).classList.add('active');el.classList.add('active')}
+
+function selTool(el){const g=el.closest('.tool-grid');if(g)g.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel')}
+function selSig(el){document.querySelectorAll('.sig-style').forEach(b=>b.classList.remove('sel'));el.classList.add('sel')}
+function showProg(){document.getElementById('prog-area').style.display='block'}
+
+function selToggle(v){
+  document.getElementById('ot-sep').classList.toggle('sel',v==='sep');
+  document.getElementById('ot-join').classList.toggle('sel',v==='join');
+  const hint=document.getElementById('toggle-hint');
+  hint.textContent=v==='join'?'6 imágenes → 1 PDF (cada imagen será una página)':'6 imágenes → 6 archivos PNG individuales';
+}
+
+function selCensor(mode){
+  const isRedact=mode==='redact';
+  document.getElementById('ctab-redact').classList.toggle('sel',isRedact);
+  document.getElementById('ctab-erase').classList.toggle('sel',!isRedact);
+  document.getElementById('censor-redact-info').style.display=isRedact?'block':'none';
+  document.getElementById('censor-erase-info').style.display=isRedact?'none':'block';
+  document.getElementById('censor-options-redact').style.display=isRedact?'block':'none';
+  document.getElementById('censor-options-erase').style.display=isRedact?'none':'block';
+  const b1=document.getElementById('preview-bar-1');
+  const b2=document.getElementById('preview-bar-2');
+  if(isRedact){
+    b1.className='redact-bar w60';b1.innerHTML='<span class="redact-label">CONFIDENCIAL</span>';
+    b2.className='redact-bar w45';b2.innerHTML='<span class="redact-label">CONFIDENCIAL</span>';
+  } else {
+    b1.className='erase-bar w55';b1.innerHTML='';
+    b2.className='erase-bar';b2.style.width='40%';b2.innerHTML='';
+  }
+  const btn=document.getElementById('censor-save-btn');
+  btn.innerHTML=isRedact?'<i class="ti ti-eye-off" style="vertical-align:-2px;margin-right:7px"></i>Aplicar censura y guardar':'<i class="ti ti-eraser" style="vertical-align:-2px;margin-right:7px"></i>Borrar contenido y guardar';
+}
+
+function updateToggle(){
+  const sel=document.querySelector('#screen-convertir .tool-btn.sel');
+  if(!sel) return;
+  const txt=sel.querySelector('i').className;
+  const isImgToPdf=sel.textContent.includes('PDF') && sel.textContent.includes('→') && sel.textContent.startsWith('Im');
+}
+</script>
