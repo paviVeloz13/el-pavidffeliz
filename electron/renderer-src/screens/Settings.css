@@ -1,0 +1,31 @@
+.settings-screen { max-width: 420px; }
+
+.settings-lang-grid {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.settings-lang-btn {
+  padding: 0.4rem 1.125rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.settings-lang-btn:hover { border-color: var(--color-brand); }
+.settings-lang-btn.active {
+  border-color: var(--color-brand);
+  background: var(--color-background-brand-subtle);
+  font-weight: 600;
+}
+
+.settings-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}

@@ -25,7 +25,7 @@ const STARTUP_TIMEOUT_MS = 15_000;
 const INVOKE_TIMEOUT_MS = 120_000;
 
 class WorkerBridge {
-  /** @param {string} binaryPath  Absolute path to the ilovepavidf-worker executable */
+  /** @param {string} binaryPath  Absolute path to the pavidffeliz-worker executable */
   constructor(binaryPath) {
     this._binaryPath = binaryPath;
     /** @type {Map<string, {resolve: Function, reject: Function, onProgress: Function|null, timer: NodeJS.Timeout}>} */

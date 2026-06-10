@@ -1,0 +1,52 @@
+.redact-screen { max-width: 620px; }
+
+.redact-warn { margin-bottom: 0.75rem; }
+
+.redact-preview-wrap {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  max-width: 100%;
+  margin-bottom: 0.75rem;
+  cursor: crosshair;
+}
+
+.redact-preview-img {
+  display: block;
+  max-width: 100%;
+  max-height: 520px;
+}
+
+/* Solid black redaction boxes */
+.redact-box {
+  position: absolute;
+  background: #000;
+  pointer-events: none;
+}
+
+/* Live drag rect (semi-transparent before confirmed) */
+.redact-dragrect {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.55);
+  border: 2px dashed #333;
+  pointer-events: none;
+}
+
+.redact-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: #000;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.redact-apply-btn {
+  background: var(--color-danger, #dc3545) !important;
+}
+.redact-apply-btn:not(:disabled):hover {
+  background: #c82333 !important;
+}

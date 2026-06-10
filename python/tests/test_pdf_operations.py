@@ -6,8 +6,8 @@ from tempfile import TemporaryDirectory
 
 from pypdf import PdfReader
 
-from ilovepavidf_backend.errors import OperationError, ValidationError
-from ilovepavidf_backend.operations.pdf_structure import (
+from pavidffeliz_backend.errors import OperationError, ValidationError
+from pavidffeliz_backend.operations.pdf_structure import (
     delete_pdf_pages,
     lock_pdf,
     merge_pdfs,

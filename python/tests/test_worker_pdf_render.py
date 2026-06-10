@@ -7,9 +7,9 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from ilovepavidf_backend.errors import PopplerMissingError
-from ilovepavidf_backend.runtime_paths import probe_poppler
-from ilovepavidf_backend.worker import run
+from pavidffeliz_backend.errors import PopplerMissingError
+from pavidffeliz_backend.runtime_paths import probe_poppler
+from pavidffeliz_backend.worker import run
 from helpers import create_blank_pdf
 
 
@@ -34,7 +34,7 @@ class WorkerPdfRenderTests(unittest.TestCase):
             source = create_blank_pdf(root / "source.pdf", [(72, 72)])
 
             with patch(
-                "ilovepavidf_backend.operations.pdf_render.require_poppler_path",
+                "pavidffeliz_backend.operations.pdf_render.require_poppler_path",
                 side_effect=PopplerMissingError({"missing_binaries": ["pdftoppm", "pdftocairo", "pdfinfo"]}),
             ):
                 events = run_worker_command(

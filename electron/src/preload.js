@@ -39,7 +39,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('shell:show-in-folder', filePath);
   },
 
-  /** Get the default output directory (~/ Downloads/iLovePaviDF). */
+  /** Get the default output directory (~/ Downloads/El PaviDFeliz). */
   getDefaultOutputDir() {
     return ipcRenderer.invoke('app:default-output-dir');
   },
@@ -47,6 +47,26 @@ contextBridge.exposeInMainWorld('electronAPI', {
   /** Create a directory (and parents) if it doesn't exist. */
   ensureDir(dirPath) {
     return ipcRenderer.invoke('fs:ensure-dir', dirPath);
+  },
+
+  /** Read persisted settings ({ outputDir, lang }). */
+  settingsRead() {
+    return ipcRenderer.invoke('settings:read');
+  },
+
+  /** Persist settings ({ outputDir, lang }). */
+  settingsWrite(settings) {
+    return ipcRenderer.invoke('settings:write', settings);
+  },
+
+  /** Return all history entries (oldest first). */
+  historyRead() {
+    return ipcRenderer.invoke('history:read');
+  },
+
+  /** Erase all history entries. */
+  historyClear() {
+    return ipcRenderer.invoke('history:clear');
   },
 
   platform: process.platform,

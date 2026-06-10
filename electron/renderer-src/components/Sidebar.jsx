@@ -24,7 +24,7 @@ export default function Sidebar({ screen, onNav, lang, onLang, s }) {
     <aside className="sidebar" aria-label="Navigation">
       <div className="logo">
         <div className="logo-name">
-          <span className="logo-accent">i</span>LovePavi<span className="logo-accent">DF</span>
+          El <span className="logo-accent">P</span>avi<span className="logo-accent">DF</span>eliz
         </div>
         <div className="logo-tag">{s.appTagline}</div>
       </div>

@@ -4,8 +4,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from ilovepavidf_backend.constants import FLATTEN_DPI, PYPDF_REQUIRED_VERSION
-from ilovepavidf_backend.operations.health import (
+from pavidffeliz_backend.constants import FLATTEN_DPI, PYPDF_REQUIRED_VERSION
+from pavidffeliz_backend.operations.health import (
     REQUIRED_DEPENDENCIES,
     probe_crypto_aes,
     probe_dependency,
@@ -14,7 +14,7 @@ from ilovepavidf_backend.operations.health import (
 
 class DependencyProbeTests(unittest.TestCase):
     def test_requirements_pin_pypdf_and_pycryptodome(self) -> None:
-        requirements = Path("python/requirements.txt").read_text(encoding="utf-8")
+        requirements = Path(__file__).parent.parent.joinpath("requirements.txt").read_text(encoding="utf-8")
 
         self.assertIn(f"pypdf=={PYPDF_REQUIRED_VERSION}", requirements)
         self.assertIn("pycryptodome==", requirements)
@@ -36,8 +36,8 @@ class DependencyProbeTests(unittest.TestCase):
         self.assertEqual(result["reason"], "missing_import")
 
     def test_probe_dependency_reports_pypdf_version_mismatch(self) -> None:
-        with patch("ilovepavidf_backend.operations.health.importlib.util.find_spec", return_value=object()):
-            with patch("ilovepavidf_backend.operations.health.metadata.version", return_value="5.0.0"):
+        with patch("pavidffeliz_backend.operations.health.importlib.util.find_spec", return_value=object()):
+            with patch("pavidffeliz_backend.operations.health.metadata.version", return_value="5.0.0"):
                 result = probe_dependency("pypdf", "pypdf", "4.3.1")
 
         self.assertFalse(result["ok"])

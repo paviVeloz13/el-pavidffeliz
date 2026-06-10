@@ -27,7 +27,8 @@ const TOOLS_FOR_GROUP = {
 };
 
 // Which tools produce multiple files (i.e. show join/separate toggle)
-const MULTI_OUTPUT_TOOLS = new Set(['jpeg_to_png', 'png_to_jpeg', 'pdf_to_png', 'pdf_to_jpeg']);
+// pdf_to_png / pdf_to_jpeg are intentionally excluded — pages are always exported separately.
+const MULTI_OUTPUT_TOOLS = new Set(['jpeg_to_png', 'png_to_jpeg']);
 
 function basename(filePath) {
   return filePath.split(/[\\/]/).pop();
@@ -170,15 +171,9 @@ export default function Convert({ s, outputDir, onPickFolder }) {
         const action = tool === 'pdf_to_png' ? 'pdf.to_png' : 'pdf.to_jpeg';
         for (let i = 0; i < files.length; i++) {
           const f = files[i];
-          const params = { input_path: f.path, dpi, overwrite: true };
-          if (joinOutput) {
-            params.join = true;
-            params.output_path = `${outputDir}/${f.name.replace(/\.pdf$/i, tool === 'pdf_to_png' ? '.png' : '.jpg')}`;
-          } else {
-            params.output_dir = outputDir;
-          }
           const res = await api.invoke(
-            action, params,
+            action,
+            { input_path: f.path, dpi, join: false, output_dir: outputDir, overwrite: true },
             (p, msg) => { setProgress((i + p) / files.length); setProgMsg(msg ?? ''); },
           );
           outPaths.push(...(res.output_paths ?? []));
@@ -263,19 +258,25 @@ export default function Convert({ s, outputDir, onPickFolder }) {
             ))}
           </div>
 
-          {/* DPI selector for PDF→image */}
+          {/* DPI selector + per-page note for PDF→image */}
           {tool && (tool === 'pdf_to_png' || tool === 'pdf_to_jpeg') && (
-            <div className="dpi-row">
-              <span className="dpi-label">{s.dpi}</span>
-              {[72, 96, 150, 300].map(d => (
-                <button
-                  key={d}
-                  className={`dpi-btn${dpi === d ? ' sel' : ''}`}
-                  onClick={() => setDpi(d)}
-                  aria-pressed={dpi === d}
-                >{d}</button>
-              ))}
-            </div>
+            <>
+              <div className="dpi-row">
+                <span className="dpi-label">{s.qualityLabel}</span>
+                {s.dpiOptions.map(({ value, label, hint }) => (
+                  <button
+                    key={value}
+                    className={`dpi-btn${dpi === value ? ' sel' : ''}`}
+                    onClick={() => setDpi(value)}
+                    aria-pressed={dpi === value}
+                    title={hint}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <div className="pdf-image-note">ℹ {s.pdfToImageNote}</div>
+            </>
           )}
 
           {/* Join/Separate toggle */}
@@ -295,7 +296,7 @@ export default function Convert({ s, outputDir, onPickFolder }) {
                   onClick={() => setJoin(true)}
                   aria-pressed={joinOutput}
                 >
-                  📋 {s.joinFile}
+                  📋 {tool === 'pdf_to_png' ? s.joinFilePng : tool === 'pdf_to_jpeg' ? s.joinFileJpeg : s.joinFile}
                 </button>
               </div>
             </>

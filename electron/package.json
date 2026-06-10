@@ -1,7 +1,7 @@
 {
-  "name": "ilovepavidf",
+  "name": "el-pavidffeliz",
   "version": "0.1.0",
-  "description": "iLovePaviDF — offline PDF and image tools",
+  "description": "El PaviDFeliz — offline PDF and image tools",
   "main": "src/main.js",
   "scripts": {
     "build:renderer": "vite build",
@@ -12,14 +12,14 @@
     "build:win": "npm run build:renderer && electron-builder --win"
   },
   "build": {
-    "appId": "com.ilovepavidf.app",
-    "productName": "iLovePaviDF",
+    "appId": "com.pavidffeliz.app",
+    "productName": "El PaviDFeliz",
     "directories": {
       "output": "dist-electron"
     },
     "extraResources": [
       {
-        "from": "../python/dist/ilovepavidf-worker",
+        "from": "../python/dist/pavidffeliz-worker",
         "to": "python-worker",
         "filter": [
           "**/*"
@@ -28,6 +28,10 @@
     ],
     "mac": {
       "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
       "target": [
         {
           "target": "dmg",
@@ -54,7 +58,6 @@
   },
   "dependencies": {
     "react": "^19.2.7",
-    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^19.2.7",
     "react-dropzone": "^15.0.0"
   }

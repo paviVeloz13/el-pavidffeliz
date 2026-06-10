@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from ilovepavidf_backend.runtime_paths import (
+from pavidffeliz_backend.runtime_paths import (
     expected_poppler_binaries,
     get_font_path,
     get_poppler_path,
@@ -13,7 +13,7 @@ from ilovepavidf_backend.runtime_paths import (
     probe_poppler,
     require_poppler_path,
 )
-from ilovepavidf_backend.errors import PopplerMissingError
+from pavidffeliz_backend.errors import PopplerMissingError
 
 
 class RuntimePathTests(unittest.TestCase):

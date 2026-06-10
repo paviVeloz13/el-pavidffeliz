@@ -11,12 +11,14 @@ __pycache__/
 python/.venv/
 python/build/
 python/dist/
-python/*.egg-info/
+**/*.egg-info/
 *.egg
 
-# Node / Electron (for future Milestone 5)
+# Node / Electron
 node_modules/
 dist/
+electron/renderer/
+electron/dist-electron/
 .cache/
 
 # Editor
@@ -24,3 +26,22 @@ dist/
 .idea/
 *.swp
 *.swo
+
+# Claude Code session data
+.claude/
+
+# Internal planning / AI prompt files
+AGENTS.md
+SPEC_V02_PROJECT_INSTRUCTIONS.md
+audit_report.md
+claude_code_audit_prompt.md
+
+# Design artifacts (old mockups / prototype)
+iloveavidf_ui_v1_final.html
+ilovepavidf_Spec_v0.1.docx
+ilovepavidf_Spec_v0.2.docx
+mock-up images/
+
+# PyInstaller temp artefacts
+*.spec.bak
+build/

@@ -14,10 +14,11 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const { randomUUID } = require('crypto');
 const { WorkerBridge } = require('./worker-bridge');
 
 // ─── Worker path resolution ────────────────────────────────────────────────
-// Dev: python/dist/ilovepavidf-worker/  (two levels up from electron/src/)
+// Dev: python/dist/pavidffeliz-worker/  (two levels up from electron/src/)
 // Production (packaged): resources/python-worker/  (electron-builder extraResources)
 
 function resolveWorkerBinary() {
@@ -25,13 +26,12 @@ function resolveWorkerBinary() {
     return path.join(
       process.resourcesPath,
       'python-worker',
-      'ilovepavidf-worker',
-      process.platform === 'win32' ? 'ilovepavidf-worker.exe' : 'ilovepavidf-worker',
+      process.platform === 'win32' ? 'pavidffeliz-worker.exe' : 'pavidffeliz-worker',
     );
   }
   const repoRoot = path.resolve(__dirname, '..', '..'); // electron/src/ → repo root
-  const binary = process.platform === 'win32' ? 'ilovepavidf-worker.exe' : 'ilovepavidf-worker';
-  return path.join(repoRoot, 'python', 'dist', 'ilovepavidf-worker', binary);
+  const binary = process.platform === 'win32' ? 'pavidffeliz-worker.exe' : 'pavidffeliz-worker';
+  return path.join(repoRoot, 'python', 'dist', 'pavidffeliz-worker', binary);
 }
 
 // ─── Global state ─────────────────────────────────────────────────────────
@@ -50,7 +50,7 @@ function createWindow() {
     height: 750,
     minWidth: 800,
     minHeight: 600,
-    title: 'iLovePaviDF',
+    title: 'El PaviDFeliz',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -77,9 +77,35 @@ function createWindow() {
 
 // ─── IPC: dialog + shell helpers ──────────────────────────────────────────
 
-ipcMain.handle('app:default-output-dir', () =>
-  path.join(os.homedir(), 'Downloads', 'iLovePaviDF'),
-);
+// ─── Settings ─────────────────────────────────────────────────────────────
+
+let _settingsFile = null;
+function settingsFile() {
+  if (!_settingsFile) _settingsFile = path.join(app.getPath('userData'), 'settings.json');
+  return _settingsFile;
+}
+
+function readSettings() {
+  const defaults = { outputDir: path.join(os.homedir(), 'Downloads', 'El PaviDFeliz'), lang: 'es' };
+  try {
+    const raw = fs.readFileSync(settingsFile(), 'utf8');
+    return { ...defaults, ...JSON.parse(raw) };
+  } catch {
+    return defaults;
+  }
+}
+
+ipcMain.handle('settings:read', () => readSettings());
+
+ipcMain.handle('settings:write', (_event, settings) => {
+  try {
+    fs.writeFileSync(settingsFile(), JSON.stringify(settings, null, 2), 'utf8');
+  } catch (err) {
+    console.error('[settings] write failed:', err.message);
+  }
+});
+
+ipcMain.handle('app:default-output-dir', () => readSettings().outputDir);
 
 ipcMain.handle('dialog:pick-files', async (_event, filters) => {
   const result = await dialog.showOpenDialog(mainWindow, {
@@ -107,6 +133,50 @@ ipcMain.handle('fs:ensure-dir', (_event, dirPath) => {
   fs.mkdirSync(dirPath, { recursive: true });
 });
 
+// ─── History ──────────────────────────────────────────────────────────────
+
+const HISTORY_SKIP = new Set(['health', 'pdf.render_preview', 'image.clean_signature']);
+let _historyFile = null;
+
+function historyFile() {
+  if (!_historyFile) _historyFile = path.join(app.getPath('userData'), 'history.ndjson');
+  return _historyFile;
+}
+
+function historyAppend(action, result) {
+  if (HISTORY_SKIP.has(action)) return;
+  const outputPaths = result?.output_paths;
+  if (!Array.isArray(outputPaths) || outputPaths.length === 0) return;
+  const entry = {
+    id: randomUUID(),
+    timestamp: new Date().toISOString(),
+    action,
+    output_paths: outputPaths,
+  };
+  try {
+    fs.appendFileSync(historyFile(), JSON.stringify(entry) + '\n', 'utf8');
+  } catch (err) {
+    console.error('[history] append failed:', err.message);
+  }
+}
+
+ipcMain.handle('history:read', () => {
+  try {
+    const raw = fs.readFileSync(historyFile(), 'utf8');
+    return raw
+      .split('\n')
+      .filter(l => l.trim())
+      .map(l => { try { return JSON.parse(l); } catch { return null; } })
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+});
+
+ipcMain.handle('history:clear', () => {
+  try { fs.writeFileSync(historyFile(), '', 'utf8'); } catch {}
+});
+
 // ─── IPC: worker:invoke ───────────────────────────────────────────────────
 //
 // commandId is generated in the renderer (preload) so progress listeners are
@@ -117,11 +187,13 @@ ipcMain.handle('worker:invoke', async (event, commandId, action, params) => {
   }
 
   const sender = event.sender;
-  return workerBridge.invokeWithId(commandId, action, params, (progress, message) => {
+  const result = await workerBridge.invokeWithId(commandId, action, params, (progress, message) => {
     if (!sender.isDestroyed()) {
       sender.send('worker:progress', commandId, progress, message);
     }
   });
+  historyAppend(action, result);
+  return result;
 });
 
 // ─── App lifecycle ────────────────────────────────────────────────────────
@@ -136,7 +208,7 @@ app.whenReady().then(async () => {
   } catch (err) {
     console.error('[main] Failed to start Python worker:', err.message);
     dialog.showErrorBox(
-      'iLovePaviDF — startup error',
+      'El PaviDFeliz — startup error',
       `Could not start the PDF processing engine.\n\n${err.message}\n\nWorker path: ${binaryPath}`,
     );
     app.quit();

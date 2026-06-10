@@ -1,6 +1,6 @@
-# iLovePaviDF Python Backend
+# El PaviDFeliz Python Backend
 
-This directory contains the Python processing backend for the iLovePaviDF
+This directory contains the Python processing backend for the El PaviDFeliz
 desktop app. Milestone 1 is intentionally small: it establishes the backend
 package layout, the NDJSON worker protocol, runtime path probes, dependency
 guards, and coordinate mapping tests before any full conversion features are
@@ -33,13 +33,13 @@ Example command:
 Example response:
 
 ```json
-{"id":"health-1","status":"ok","result":{"app":"iLovePaviDF"}}
+{"id":"health-1","status":"ok","result":{"app":"El PaviDFeliz"}}
 ```
 
 Run the worker manually from the repository root:
 
 ```bash
-PYTHONPATH=python/src python3 -m ilovepavidf_backend
+PYTHONPATH=python/src python3 -m pavidffeliz_backend
 ```
 
 Create the reproducible local development environment:

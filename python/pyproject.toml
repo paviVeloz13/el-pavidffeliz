@@ -3,9 +3,9 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ilovepavidf-backend"
+name = "pavidffeliz-backend"
 version = "0.1.0"
-description = "Python processing backend for the iLovePaviDF desktop app."
+description = "Python processing backend for the El PaviDFeliz desktop app."
 requires-python = ">=3.11"
 dependencies = [
   "pdf2image==1.17.0",
@@ -20,3 +20,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["tests"]

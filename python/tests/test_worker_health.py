@@ -4,9 +4,9 @@ import io
 import json
 import unittest
 
-from ilovepavidf_backend.constants import APP_NAME, FLATTEN_DPI, PYPDF_REQUIRED_VERSION
-from ilovepavidf_backend.protocol import Command
-from ilovepavidf_backend.worker import dispatch, run
+from pavidffeliz_backend.constants import APP_NAME, FLATTEN_DPI, PYPDF_REQUIRED_VERSION
+from pavidffeliz_backend.protocol import Command
+from pavidffeliz_backend.worker import dispatch, run
 
 
 class WorkerHealthTests(unittest.TestCase):

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from ilovepavidf_backend.worker import OPERATIONS, run
+from pavidffeliz_backend.worker import OPERATIONS, run
 from helpers import create_blank_pdf, create_jpeg, pdf_page_count
 
 

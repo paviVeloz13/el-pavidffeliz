@@ -8,7 +8,7 @@ _src = os.path.join(os.path.dirname(_here), "src")
 if _src not in sys.path:
     sys.path.insert(0, _src)
 
-from ilovepavidf_backend.worker import main
+from pavidffeliz_backend.worker import main
 
 if __name__ == "__main__":
     raise SystemExit(main())

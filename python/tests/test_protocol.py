@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 import unittest
 
-from ilovepavidf_backend.errors import ProtocolError
-from ilovepavidf_backend.protocol import (
+from pavidffeliz_backend.errors import ProtocolError
+from pavidffeliz_backend.protocol import (
     encode_event,
     error_response,
     ok_response,

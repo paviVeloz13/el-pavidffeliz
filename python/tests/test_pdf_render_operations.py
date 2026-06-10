@@ -8,15 +8,15 @@ from unittest.mock import patch
 from PIL import Image
 from pypdf import PdfReader
 
-from ilovepavidf_backend.constants import FLATTEN_DPI, MAX_JOINED_IMAGE_HEIGHT_PX, ORGANIZE_THUMBNAIL_DPI, PREVIEW_DPI
-from ilovepavidf_backend.errors import PopplerMissingError, ValidationError
-from ilovepavidf_backend.operations.pdf_render import (
+from pavidffeliz_backend.constants import FLATTEN_DPI, MAX_JOINED_IMAGE_HEIGHT_PX, ORGANIZE_THUMBNAIL_DPI, PREVIEW_DPI
+from pavidffeliz_backend.errors import PopplerMissingError, ValidationError
+from pavidffeliz_backend.operations.pdf_render import (
     _render_page,
     flatten_to_image_pdf,
     pdf_to_images,
     render_preview_page,
 )
-from ilovepavidf_backend.runtime_paths import probe_poppler
+from pavidffeliz_backend.runtime_paths import probe_poppler
 from helpers import create_blank_pdf, pdf_page_count
 
 
@@ -35,8 +35,8 @@ class PdfRenderOperationTests(unittest.TestCase):
             fake_poppler = root / "poppler"
             fake_poppler.mkdir()
 
-            with patch("ilovepavidf_backend.operations.pdf_render.require_poppler_path", return_value=fake_poppler):
-                with patch("ilovepavidf_backend.operations.pdf_render.convert_from_path", return_value=[Image.new("RGB", (10, 10))]) as convert:
+            with patch("pavidffeliz_backend.operations.pdf_render.require_poppler_path", return_value=fake_poppler):
+                with patch("pavidffeliz_backend.operations.pdf_render.convert_from_path", return_value=[Image.new("RGB", (10, 10))]) as convert:
                     image = _render_page(source, 1, dpi=150, image_format="png")
 
             try:
@@ -52,7 +52,7 @@ class PdfRenderOperationTests(unittest.TestCase):
             source = create_blank_pdf(root / "source.pdf", [(72, 72)])
 
             with patch(
-                "ilovepavidf_backend.operations.pdf_render.require_poppler_path",
+                "pavidffeliz_backend.operations.pdf_render.require_poppler_path",
                 side_effect=PopplerMissingError({"missing_binaries": ["pdftoppm", "pdftocairo", "pdfinfo"]}),
             ):
                 with self.assertRaises(PopplerMissingError):

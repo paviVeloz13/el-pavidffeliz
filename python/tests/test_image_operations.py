@@ -6,8 +6,8 @@ from pathlib import Path
 
 from PIL import Image
 
-from ilovepavidf_backend.errors import ValidationError
-from ilovepavidf_backend.operations.image import (
+from pavidffeliz_backend.errors import ValidationError
+from pavidffeliz_backend.operations.image import (
     JPEG_QUALITY_LEVELS,
     convert_jpeg_to_png,
     convert_png_to_jpeg,
