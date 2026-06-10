@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import FileList from '../components/FileList';
 import './Convert.css';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -92,6 +93,10 @@ export default function Convert({ s, outputDir, onPickFolder }) {
     setPhase('idle');
     setResults([]);
     setErrorMsg('');
+  }
+
+  function removeFile(idx) {
+    setFiles(prev => prev.filter((_, i) => i !== idx));
   }
 
   async function runConvert() {
@@ -232,6 +237,15 @@ export default function Convert({ s, outputDir, onPickFolder }) {
             <span>{s.detectedBanner(files.length, humanType(group))}</span>
             <button className="clear-btn" onClick={clearFiles} aria-label="Clear files">✕</button>
           </div>
+
+          {/* Sortable file list (2+ files) */}
+          {files.length > 1 && (
+            <FileList
+              files={files}
+              onReorder={setFiles}
+              onRemove={removeFile}
+            />
+          )}
 
           {/* Tool grid */}
           <div className="sec-label">{s.convertTo}</div>
