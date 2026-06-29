@@ -2,8 +2,8 @@
 # Build El PaviDFeliz — Python worker + Electron app.
 #
 # Usage:
-#   ./build.sh           # macOS (arm64 + x64 DMGs)
-#   ./build.sh --win     # Windows NSIS installer (run on Windows or via cross-build)
+#   ./build.sh           # macOS build using electron-builder's mac target config
+#   ./build.sh --win     # Windows x64 NSIS installer (must run on Windows)
 #   ./build.sh --no-py   # Skip Python build (use existing dist/)
 set -euo pipefail
 
@@ -13,13 +13,25 @@ ELECTRON_DIR="$REPO_ROOT/electron"
 
 SKIP_PY=0
 ELECTRON_ARGS=(--mac)
+TARGET=mac
 
 for arg in "$@"; do
   case "$arg" in
-    --win)    ELECTRON_ARGS=(--win) ;;
+    --win)
+      TARGET=win
+      ELECTRON_ARGS=(--win --x64)
+      ;;
     --no-py)  SKIP_PY=1 ;;
   esac
 done
+
+if [[ "$TARGET" == "win" ]]; then
+  if [[ ! ("${OSTYPE:-}" == "msys" || "${OSTYPE:-}" == "cygwin" || "${OSTYPE:-}" == "win32") ]]; then
+    echo "ERROR: Self-contained Windows builds must run on Windows." >&2
+    echo "Use build-windows.ps1 on the Windows machine so the packaged app contains a Windows PyInstaller worker and a Windows NSIS installer." >&2
+    exit 1
+  fi
+fi
 
 # ── 1. Python worker ──────────────────────────────────────────────────────────
 if [[ $SKIP_PY -eq 0 ]]; then

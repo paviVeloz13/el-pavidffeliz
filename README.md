@@ -97,11 +97,15 @@ python3.13 -m venv .venv
 # Skip Python rebuild if worker is already built
 ./build.sh --no-py
 
-# Windows NSIS installer (run on Windows)
-./build.sh --win
+# Windows x64 NSIS installer (run on Windows PowerShell)
+powershell -ExecutionPolicy Bypass -File .\build-windows.ps1
 ```
 
 Output is written to `electron/dist-electron/`.
+
+### Windows handoff
+
+Use the Windows machine for the Windows packaging phase. The exact setup, build, and validation steps are documented in [docs/windows-handoff.md](docs/windows-handoff.md).
 
 ### Dev mode (no installer)
 
