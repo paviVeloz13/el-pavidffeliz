@@ -57,7 +57,7 @@ El PaviDFeliz is an offline-first desktop application for PDF and image manipula
 
 | Screen | Route key | Backend action(s) |
 |--------|-----------|-------------------|
-| Convert | `convert` | `pdf.to_jpeg`, `pdf.to_png`, `image.jpeg_to_png`, `image.png_to_jpeg`, `image.images_to_pdf` |
+| Convert | `convert` | `pdf.to_jpeg`, `pdf.to_png`, `image.jpeg_to_png`, `image.png_to_jpeg`, `image.webp_to_png`, `image.webp_to_jpeg`, `image.images_to_pdf` |
 | Merge | `merge` | `pdf.merge` |
 | Split | `split` | `pdf.split_ranges`, `pdf.split_every_n`, `pdf.split_individual` |
 | Compress | `compress` | `pdf.compress`, `image.compress` |
@@ -76,7 +76,8 @@ El PaviDFeliz is an offline-first desktop application for PDF and image manipula
 
 ```
 health
-image.jpeg_to_png      image.png_to_jpeg      image.images_to_pdf    image.compress
+image.jpeg_to_png      image.png_to_jpeg      image.webp_to_png      image.webp_to_jpeg
+image.images_to_pdf    image.compress
 image.clean_signature
 pdf.to_jpeg            pdf.to_png             pdf.render_preview     pdf.flatten_to_image_pdf
 pdf.merge              pdf.split_ranges       pdf.split_every_n      pdf.split_individual

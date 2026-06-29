@@ -2,13 +2,14 @@
 """Build the pavidffeliz-worker PyInstaller bundle.
 
 Run from the python/ directory:
-    .venv/bin/python scripts/build_worker.py [--clean]
+    .venv/bin/python scripts/build_worker.py [--no-clean]
 
 Checks that all required vendor assets are present for the current platform
 before invoking PyInstaller.
 """
 
 import argparse
+import importlib.util
 import platform
 import subprocess
 import sys
@@ -65,19 +66,24 @@ def main() -> int:
             print(f"[build_worker] ERROR: {e}", file=sys.stderr)
         return 1
 
-    pyinstaller = ROOT / ".venv" / "bin" / "pyinstaller"
-    if sys.platform == "win32":
-        pyinstaller = ROOT / ".venv" / "Scripts" / "pyinstaller.exe"
-
-    if not pyinstaller.exists():
+    python_exe = Path(sys.executable)
+    if not python_exe.exists():
         print(
-            "[build_worker] ERROR: PyInstaller not found in .venv. "
-            "Run: pip install pyinstaller",
+            "[build_worker] ERROR: Active Python interpreter not found. "
+            "Run this script with the project venv Python.",
             file=sys.stderr,
         )
         return 1
 
-    cmd = [str(pyinstaller), str(SPEC), "--noconfirm"]
+    if importlib.util.find_spec("PyInstaller") is None:
+        print(
+            "[build_worker] ERROR: PyInstaller is not installed in the active environment. "
+            "Run: .venv/bin/python -m pip install -r requirements-dev.txt",
+            file=sys.stderr,
+        )
+        return 1
+
+    cmd = [str(python_exe), "-m", "PyInstaller", str(SPEC), "--noconfirm"]
     if not args.no_clean:
         cmd.append("--clean")
 

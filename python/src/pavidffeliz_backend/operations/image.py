@@ -26,7 +26,7 @@ JPEG_QUALITY_LEVELS = {
     "high": 92,
 }
 
-SUPPORTED_IMAGE_TO_PDF_FORMATS = {"JPEG", "PNG"}
+SUPPORTED_IMAGE_TO_PDF_FORMATS = {"JPEG", "PNG", "WEBP"}
 
 
 def _open_image(path: Path) -> Image.Image:
@@ -117,6 +117,63 @@ def convert_png_to_jpeg(
     return result
 
 
+def convert_webp_to_png(
+    input_path: Path,
+    output_path: Path | None = None,
+    *,
+    overwrite: bool = False,
+    emit_progress: ProgressEmitter = noop_progress,
+) -> dict[str, Any]:
+    emit_progress(0.05, "Opening WEBP")
+    output = require_output_file(output_path and str(output_path), input_path=input_path, default_suffix=".png", overwrite=overwrite)
+
+    image = _open_image(input_path)
+    if image.format != "WEBP":
+        raise ValidationError("Input image must be WEBP.", {"path": str(input_path), "format": image.format})
+
+    emit_progress(0.55, "Saving PNG")
+    image.save(output, format="PNG")
+    emit_progress(1.0, "WEBP converted to PNG")
+
+    result = file_result("image.webp_to_png", [input_path], [output])
+    result["image"] = _image_metadata(image)
+    return result
+
+
+def convert_webp_to_jpeg(
+    input_path: Path,
+    output_path: Path | None = None,
+    *,
+    quality_level: str = "medium",
+    overwrite: bool = False,
+    emit_progress: ProgressEmitter = noop_progress,
+) -> dict[str, Any]:
+    if quality_level not in JPEG_QUALITY_LEVELS:
+        raise ValidationError(
+            "quality_level must be one of low, medium, or high.",
+            {"quality_level": quality_level, "allowed": list(JPEG_QUALITY_LEVELS)},
+        )
+
+    emit_progress(0.05, "Opening WEBP")
+    output = require_output_file(output_path and str(output_path), input_path=input_path, default_suffix=".jpg", overwrite=overwrite)
+
+    image = _open_image(input_path)
+    if image.format != "WEBP":
+        raise ValidationError("Input image must be WEBP.", {"path": str(input_path), "format": image.format})
+
+    emit_progress(0.55, "Flattening transparency")
+    rgb_image = _flatten_to_rgb(image)
+    quality = JPEG_QUALITY_LEVELS[quality_level]
+    rgb_image.save(output, format="JPEG", quality=quality, optimize=True)
+    emit_progress(1.0, "WEBP converted to JPEG")
+
+    result = file_result("image.webp_to_jpeg", [input_path], [output])
+    result["image"] = _image_metadata(image)
+    result["quality_level"] = quality_level
+    result["quality"] = quality
+    return result
+
+
 def images_to_pdf(
     input_paths: list[Path],
     output_path: Path,
@@ -134,7 +191,7 @@ def images_to_pdf(
             image = _open_image(path)
             if image.format not in SUPPORTED_IMAGE_TO_PDF_FORMATS:
                 raise ValidationError(
-                    "Images to PDF supports JPEG and PNG inputs only.",
+                    "Images to PDF supports JPEG, PNG, and WEBP inputs only.",
                     {"path": str(path), "format": image.format},
                 )
             source_metadata.append({"path": str(path), **_image_metadata(image)})
@@ -219,6 +276,31 @@ def handle_png_to_jpeg(params: dict[str, Any], emit_progress: ProgressEmitter = 
     output_value = params.get("output_path")
     output_path = Path(output_value).expanduser() if output_value is not None else None
     return convert_png_to_jpeg(
+        input_path,
+        output_path,
+        quality_level=str_param(params, "quality_level", "medium"),
+        overwrite=bool_param(params, "overwrite", False),
+        emit_progress=emit_progress,
+    )
+
+
+def handle_webp_to_png(params: dict[str, Any], emit_progress: ProgressEmitter = noop_progress) -> dict[str, Any]:
+    input_path = require_input_file(params.get("input_path"))
+    output_value = params.get("output_path")
+    output_path = Path(output_value).expanduser() if output_value is not None else None
+    return convert_webp_to_png(
+        input_path,
+        output_path,
+        overwrite=bool_param(params, "overwrite", False),
+        emit_progress=emit_progress,
+    )
+
+
+def handle_webp_to_jpeg(params: dict[str, Any], emit_progress: ProgressEmitter = noop_progress) -> dict[str, Any]:
+    input_path = require_input_file(params.get("input_path"))
+    output_value = params.get("output_path")
+    output_path = Path(output_value).expanduser() if output_value is not None else None
+    return convert_webp_to_jpeg(
         input_path,
         output_path,
         quality_level=str_param(params, "quality_level", "medium"),

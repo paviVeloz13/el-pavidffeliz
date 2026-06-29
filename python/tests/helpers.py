@@ -22,6 +22,16 @@ def create_png(
     return path
 
 
+def create_webp(
+    path: Path,
+    size: tuple[int, int] = (32, 24),
+    color: tuple[int, int, int, int] = (70, 150, 60, 180),
+) -> Path:
+    image = Image.new("RGBA", size, color)
+    image.save(path, format="WEBP", quality=90)
+    return path
+
+
 def create_blank_pdf(path: Path, page_sizes: list[tuple[int, int]]) -> Path:
     writer = PdfWriter()
     for width, height in page_sizes:

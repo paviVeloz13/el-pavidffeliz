@@ -11,7 +11,7 @@ No subscriptions. No internet connection. No data leaves your machine.
 
 | Tool | What it does |
 |------|-------------|
-| **Convert** | PDF → PNG/JPEG, JPEG ↔ PNG, images → PDF |
+| **Convert** | PDF → PNG/JPEG, JPEG ↔ PNG, WEBP → PNG/JPEG, images → PDF |
 | **Merge** | Combine multiple PDFs into one |
 | **Split** | Split by page ranges, every N pages, or one file per page |
 | **Compress** | Reduce file size for PDFs and images |
@@ -85,6 +85,7 @@ See `python/vendor/poppler/README.md` for sources.
 cd python
 python3.13 -m venv .venv
 .venv/bin/pip install -e .
+.venv/bin/pip install -r requirements-dev.txt
 ```
 
 ### Build

@@ -9,7 +9,14 @@ from typing import Any
 
 from .errors import AppError, ProtocolError, UnknownOperationError
 from .operations.health import handle_health
-from .operations.image import handle_compress_image, handle_images_to_pdf, handle_jpeg_to_png, handle_png_to_jpeg
+from .operations.image import (
+    handle_compress_image,
+    handle_images_to_pdf,
+    handle_jpeg_to_png,
+    handle_png_to_jpeg,
+    handle_webp_to_jpeg,
+    handle_webp_to_png,
+)
 from .operations.pdf_render import (
     handle_flatten_to_image_pdf,
     handle_pdf_to_jpeg,
@@ -40,6 +47,8 @@ OPERATIONS: dict[str, OperationHandler] = {
     "health": handle_health,
     "image.jpeg_to_png": handle_jpeg_to_png,
     "image.png_to_jpeg": handle_png_to_jpeg,
+    "image.webp_to_png": handle_webp_to_png,
+    "image.webp_to_jpeg": handle_webp_to_jpeg,
     "image.images_to_pdf": handle_images_to_pdf,
     "pdf.to_jpeg": handle_pdf_to_jpeg,
     "pdf.to_png": handle_pdf_to_png,
