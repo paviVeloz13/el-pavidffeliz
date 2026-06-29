@@ -13,7 +13,8 @@ function detectGroup(files) {
   if ([...exts].every(e => e === 'pdf'))  return 'pdf';
   if ([...exts].every(e => e === 'jpg' || e === 'jpeg')) return 'jpeg';
   if ([...exts].every(e => e === 'png'))  return 'png';
-  if ([...exts].every(e => ['jpg','jpeg','png'].includes(e))) return 'images';
+  if ([...exts].every(e => e === 'webp')) return 'webp';
+  if ([...exts].every(e => ['jpg', 'jpeg', 'png', 'webp'].includes(e))) return 'images';
   return 'mixed';
 }
 
@@ -21,21 +22,29 @@ function detectGroup(files) {
 const TOOLS_FOR_GROUP = {
   jpeg:   ['jpeg_to_png', 'images_to_pdf'],
   png:    ['png_to_jpeg', 'images_to_pdf'],
+  webp:   ['webp_to_png', 'webp_to_jpeg', 'images_to_pdf'],
   images: ['images_to_pdf'],
   pdf:    ['pdf_to_png', 'pdf_to_jpeg'],
-  mixed:  ['jpeg_to_png', 'png_to_jpeg', 'images_to_pdf', 'pdf_to_png', 'pdf_to_jpeg'],
+  mixed:  ['jpeg_to_png', 'png_to_jpeg', 'webp_to_png', 'webp_to_jpeg', 'images_to_pdf', 'pdf_to_png', 'pdf_to_jpeg'],
 };
 
 // Which tools produce multiple files (i.e. show join/separate toggle)
 // pdf_to_png / pdf_to_jpeg are intentionally excluded — pages are always exported separately.
-const MULTI_OUTPUT_TOOLS = new Set(['jpeg_to_png', 'png_to_jpeg']);
+const MULTI_OUTPUT_TOOLS = new Set(['jpeg_to_png', 'png_to_jpeg', 'webp_to_png', 'webp_to_jpeg']);
+
+const IMAGE_CONVERSION_TOOLS = {
+  jpeg_to_png: { action: 'image.jpeg_to_png', suffix: '.png' },
+  png_to_jpeg: { action: 'image.png_to_jpeg', suffix: '.jpg' },
+  webp_to_png: { action: 'image.webp_to_png', suffix: '.png' },
+  webp_to_jpeg: { action: 'image.webp_to_jpeg', suffix: '.jpg' },
+};
 
 function basename(filePath) {
   return filePath.split(/[\\/]/).pop();
 }
 
 function humanType(group) {
-  return { jpeg: 'JPEG', png: 'PNG', images: 'image', pdf: 'PDF', mixed: '' }[group] ?? '';
+  return { jpeg: 'JPEG', png: 'PNG', webp: 'WEBP', images: 'image', pdf: 'PDF', mixed: '' }[group] ?? '';
 }
 
 // ─── component ────────────────────────────────────────────────────────────────
@@ -75,13 +84,20 @@ export default function Convert({ s, outputDir, onPickFolder }) {
   // Drag-and-drop only — clicks use the Electron dialog (more reliable in sandbox mode).
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { 'application/pdf': ['.pdf'], 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] },
+    accept: {
+      'application/pdf': ['.pdf'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/webp': ['.webp'],
+    },
     noClick: true,
     noKeyboard: true,
   });
 
   async function openFilePicker() {
-    const paths = await window.electronAPI.pickFiles();
+    const paths = await window.electronAPI.pickFiles([
+      { name: 'Convertible files', extensions: ['pdf', 'jpg', 'jpeg', 'png', 'webp'] },
+    ]);
     if (!paths.length) return;
     // Construct minimal File-like objects with path and name.
     const fileObjs = paths.map(p => ({ path: p, name: p.split('/').pop() }));
@@ -128,9 +144,8 @@ export default function Convert({ s, outputDir, onPickFolder }) {
         );
         outPaths.push(...(result.output_paths ?? [outputPath]));
 
-      } else if (tool === 'jpeg_to_png' || tool === 'png_to_jpeg') {
-        const action = tool === 'jpeg_to_png' ? 'image.jpeg_to_png' : 'image.png_to_jpeg';
-        const suffix = tool === 'jpeg_to_png' ? '.png' : '.jpg';
+      } else if (IMAGE_CONVERSION_TOOLS[tool]) {
+        const { action, suffix } = IMAGE_CONVERSION_TOOLS[tool];
 
         if (joinOutput) {
           // Join: images → PDF via separate step
@@ -195,6 +210,8 @@ export default function Convert({ s, outputDir, onPickFolder }) {
   const toolDefs = [
     { id: 'jpeg_to_png',   label: s.toolJpegToPng },
     { id: 'png_to_jpeg',   label: s.toolPngToJpeg },
+    { id: 'webp_to_png',   label: s.toolWebpToPng },
+    { id: 'webp_to_jpeg',  label: s.toolWebpToJpeg },
     { id: 'images_to_pdf', label: s.toolImagesToPdf },
     { id: 'pdf_to_png',    label: s.toolPdfToPng },
     { id: 'pdf_to_jpeg',   label: s.toolPdfToJpeg },

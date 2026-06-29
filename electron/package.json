@@ -30,6 +30,7 @@
       "category": "public.app-category.productivity",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
+      "icon": "assets/icon.icns",
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "target": [
@@ -41,6 +42,9 @@
           ]
         }
       ]
+    },
+    "dmg": {
+      "icon": "assets/icon.icns"
     },
     "win": {
       "target": [

@@ -11,6 +11,8 @@ Expected platform layout:
 - `macos-x64/lib/`: required dylib dependencies
 - `windows/`: `pdftoppm.exe`, `pdftocairo.exe`, `pdfinfo.exe`, and required DLL dependencies
 
+Windows packaging must be built on Windows so the final installer contains a Windows PyInstaller worker alongside the Windows Poppler bundle.
+
 For local macOS vendoring from Homebrew:
 
 ```bash

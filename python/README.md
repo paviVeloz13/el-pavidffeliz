@@ -47,6 +47,7 @@ Create the reproducible local development environment:
 ```bash
 python3.13 -m venv python/.venv
 python/.venv/bin/python -m pip install -r python/requirements.txt
+python/.venv/bin/python -m pip install -r python/requirements-dev.txt
 ```
 
 Run tests from the repository root:

@@ -57,7 +57,7 @@ El PaviDFeliz is an offline-first desktop application for PDF and image manipula
 
 | Screen | Route key | Backend action(s) |
 |--------|-----------|-------------------|
-| Convert | `convert` | `pdf.to_jpeg`, `pdf.to_png`, `image.jpeg_to_png`, `image.png_to_jpeg`, `image.images_to_pdf` |
+| Convert | `convert` | `pdf.to_jpeg`, `pdf.to_png`, `image.jpeg_to_png`, `image.png_to_jpeg`, `image.webp_to_png`, `image.webp_to_jpeg`, `image.images_to_pdf` |
 | Merge | `merge` | `pdf.merge` |
 | Split | `split` | `pdf.split_ranges`, `pdf.split_every_n`, `pdf.split_individual` |
 | Compress | `compress` | `pdf.compress`, `image.compress` |
@@ -76,7 +76,8 @@ El PaviDFeliz is an offline-first desktop application for PDF and image manipula
 
 ```
 health
-image.jpeg_to_png      image.png_to_jpeg      image.images_to_pdf    image.compress
+image.jpeg_to_png      image.png_to_jpeg      image.webp_to_png      image.webp_to_jpeg
+image.images_to_pdf    image.compress
 image.clean_signature
 pdf.to_jpeg            pdf.to_png             pdf.render_preview     pdf.flatten_to_image_pdf
 pdf.merge              pdf.split_ranges       pdf.split_every_n      pdf.split_individual
@@ -171,8 +172,8 @@ Fixes applied after all 17 milestones completed, discovered during live testing.
 
 ## Known Limitations / Not Yet Done
 
-- **macOS x64 Poppler vendor** not populated (`python/vendor/poppler/macos-x64/` is empty) — x64 DMG bundles without Poppler; PDF render/redact/sign features will fail on x64 Macs
-- **Windows vendor** not populated (`python/vendor/poppler/windows/` is empty)
+- **macOS x64 release build** is not self-contained yet — current x64 packaging from the Apple Silicon host embeds an arm64 Python worker and arm64 Pillow binaries, and `python/vendor/poppler/macos-x64/` is still effectively empty
+- **Windows release build** still requires a Windows-native build/test pass — the Windows Poppler vendor tree is present, but the self-contained Windows worker and NSIS installer must be built and smoke-tested on Windows 10/11
 - **No code signing** — DMGs are unsigned; macOS Gatekeeper will show an "unidentified developer" warning on first launch
 - **Distribution metadata** for pdf2image, Pillow, pypdf not preserved by PyInstaller (cosmetic health check warnings only; functionality unaffected)
 - **No auto-update** mechanism

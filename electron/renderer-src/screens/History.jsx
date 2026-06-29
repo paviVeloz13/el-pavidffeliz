@@ -37,6 +37,8 @@ function actionLabel(action, s) {
     'pdf.flatten_to_image_pdf': s.navRedact,
     'image.jpeg_to_png':     s.toolJpegToPng,
     'image.png_to_jpeg':     s.toolPngToJpeg,
+    'image.webp_to_png':     s.toolWebpToPng,
+    'image.webp_to_jpeg':    s.toolWebpToJpeg,
     'image.images_to_pdf':   s.toolImagesToPdf,
     'image.compress':        s.navCompress,
   };
