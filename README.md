@@ -29,15 +29,17 @@ No subscriptions. No internet connection. No data leaves your machine.
 
 ## Download
 
-> Pre-built installers will be available on the [Releases](../../releases) page.
+> The current downloadable prototype is published from the [Releases](../../releases) page.
 
-| Platform | File |
-|----------|------|
-| macOS (Apple Silicon) | `El PaviDFeliz-x.x.x-arm64.dmg` |
-| macOS (Intel) | `El PaviDFeliz-x.x.x.dmg` |
-| Windows | `El PaviDFeliz-Setup-x.x.x.exe` |
+| Platform | File | Status |
+|----------|------|--------|
+| macOS (Apple Silicon) | `El PaviDFeliz-x.x.x-arm64.dmg` | Available in the prototype release |
+| macOS (Intel) | `El PaviDFeliz-x.x.x.dmg` | Not release-ready yet |
+| Windows | `El PaviDFeliz-Setup-x.x.x.exe` | Not release-ready yet |
 
-**macOS note:** The app is not yet notarized. On first launch, right-click the app → **Open** → click **Open** in the dialog. You only need to do this once.
+**Prototype note:** The current release is unsigned and not notarized.
+
+**macOS note:** On first launch, right-click the app → **Open** → click **Open** in the dialog. You only need to do this once.
 
 ---
 
