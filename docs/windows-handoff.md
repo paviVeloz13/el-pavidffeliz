@@ -89,6 +89,31 @@ powershell -ExecutionPolicy Bypass -File .\build-windows.ps1
 
 Output goes to `electron\dist-electron\`.
 
+## Build A Public Windows Release
+
+For a publishable installer, use release mode instead of the plain build:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-windows.ps1 -Release
+```
+
+`-Release` adds fail-fast guardrails:
+
+- requires Windows signing configuration before building
+- enables `forceCodeSigning=true` so Electron cannot silently skip signing
+- verifies the generated NSIS installer with `Get-AuthenticodeSignature`
+- verifies the unpacked app `.exe` with `Get-AuthenticodeSignature`
+
+Release mode accepts any of these signing paths:
+
+1. `WIN_CSC_LINK` + `WIN_CSC_KEY_PASSWORD`
+2. `CSC_LINK` + `CSC_KEY_PASSWORD`
+3. `build.cscLink` or `win.cscLink` plus a matching `cscKeyPassword` in `electron\package.json`
+4. `win.signtoolOptions.certificateSubjectName` or `certificateSha1` in `electron\package.json`
+5. `win.azureSignOptions` in `electron\package.json` plus Azure signing credentials
+
+Do not publish a Windows installer unless `-Release` completes successfully.
+
 ## Windows-Only Validation Checklist
 
 - Install the NSIS `.exe` on a clean Windows 10 machine
